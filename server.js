@@ -11,11 +11,12 @@ app.use(express.urlencoded({ extended: false }));
 // Routers
 const serviceRouter = require('./routes/service/index');
 
+// Routes
 app.use('/api/v1/service', serviceRouter);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ error: 'Something broke!' });
+    res.status(500).json({ error: 'Something broke!', status: 500 });
 })
 
 async function startServer() {

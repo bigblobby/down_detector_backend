@@ -1,7 +1,6 @@
 const serviceHelper = require('../../helpers/service/index');
 
 async function checkService(req, res){
-    // throw new Error('Something broke!');
     const {
         url,
         getScreenshot = false,
@@ -21,7 +20,6 @@ async function checkService(req, res){
     }
 
     res.json(data);
-
 }
 
 module.exports = {

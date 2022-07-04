@@ -1,10 +1,24 @@
 const axios = require('axios');
 const puppeteer = require("puppeteer");
 
+/**
+ * Adds a protocol to a url.
+ *
+ * @param url
+ * @returns {string}
+ * @private
+ */
 function _addHttp(url){
     return `https://${url}`;
 }
 
+/**
+ * Checks whether a url has a protocol.
+ *
+ * @param url
+ * @returns {string}
+ * @private
+ */
 function _checkForHttp(url){
     const re = new RegExp("^(http|https)://", "i");
     const match = re.test(url);
@@ -13,6 +27,13 @@ function _checkForHttp(url){
     return url;
 }
 
+/**
+ * Checks whether a site is up or down.
+ *
+ * @param {string} url
+ * @param {object: {getHeaders: boolean}} options
+ * @returns {Promise<object>}
+ */
 async function checkUrl(url, options = {}) {
     return new Promise((resolve) => {
         const newUrl = _checkForHttp(url);
@@ -38,6 +59,12 @@ async function checkUrl(url, options = {}) {
     });
 }
 
+/**
+ * Returns a screenshot of the site.
+ *
+ * @param {string} url
+ * @returns {Promise<string>}
+ */
 function getScreenshot(url){
     return puppeteer
         .launch({
