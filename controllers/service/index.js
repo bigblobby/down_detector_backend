@@ -12,6 +12,12 @@ async function checkService(req, res){
     }
 
     const result = await serviceHelper.checkUrl(url, options);
+
+    /*
+    * @TODO
+    * Generate a screenshot, save to a file, then return the path if the screenshot exists.
+    * There's no need to generate a screenshot if it already exists.
+    */
     const screenshot = getScreenshot ? await serviceHelper.getScreenshot(result.url) : null;
 
     const data = {

@@ -37,23 +37,27 @@ function _checkForHttp(url){
 async function checkUrl(url, options = {}) {
     return new Promise((resolve) => {
         const newUrl = _checkForHttp(url);
-        axios.get(newUrl)
+        axios.get(newUrl, {headers: {
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
+                'referer': newUrl,
+            }})
             .then(response => {
-                const date = new Date().toISOString();
+                const date = new Date()
                 resolve({
                     message: 'Site is up.',
-                    code: response.status,
+                    statusCode: response.status,
                     url: response.config.url,
                     date: date,
                     headers: options.getHeaders ? response.headers : null
                 });
             }).catch(error => {
-                const date = new Date().toISOString();
+                const date = new Date()
                 resolve({
-                    message: 'Site is down.',
-                    code: 500,
+                    message: error.response.statusText,
+                    statusCode: error.response.status,
                     url: error.config.url,
                     date: date,
+                    headers: options.getHeaders ? error.response.headers : null
                 });
             });
     });
