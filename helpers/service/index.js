@@ -1,5 +1,7 @@
 const axios = require('axios');
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+puppeteer.use(StealthPlugin())
 
 /**
  * Adds a protocol to a url.
@@ -32,32 +34,47 @@ function _checkForHttp(url){
  *
  * @param {string} url
  * @param {object: {getHeaders: boolean}} options
+ * @param {object: {getScreenshot: boolean}} options
  * @returns {Promise<object>}
  */
 async function checkUrl(url, options = {}) {
     return new Promise((resolve) => {
         const newUrl = _checkForHttp(url);
-        axios.get(newUrl, {headers: {
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
-                'referer': newUrl,
-            }})
-            .then(response => {
-                const date = new Date()
+
+        puppeteer
+            .launch({
+                defaultViewport: {
+                    width: 800,
+                    height: 600,
+                    deviceScaleFactor: 1,
+                },
+            })
+            .then(async (browser) => {
+                const date = new Date();
+                const page = await browser.newPage();
+                const res = await page.goto(newUrl);
+                // const performance = JSON.parse(await page.evaluate(
+                //     () => JSON.stringify(window.performance)
+                // ));
+                // const perfEntries = JSON.parse(
+                //     await page.evaluate(() => JSON.stringify(performance.getEntries()))
+                // );
+
+                let screenshot = null;
+                if(options.getScreenshot){
+                    screenshot = await page.screenshot({ encoding: "base64" });
+                }
+
+                await browser.close();
+
                 resolve({
-                    message: 'Site is up.',
-                    statusCode: response.status,
-                    url: response.config.url,
-                    date: date,
-                    headers: options.getHeaders ? response.headers : null
-                });
-            }).catch(error => {
-                const date = new Date()
-                resolve({
-                    message: error.response.statusText,
-                    statusCode: error.response.status,
-                    url: error.config.url,
-                    date: date,
-                    headers: options.getHeaders ? error.response.headers : null
+                    statusText: res.statusText(),
+                    statusCode: res.status(),
+                    url: res.url(),
+                    isDown: !res.ok(),
+                    lastChecked: date,
+                    headers: options.getHeaders ? res.headers() : null,
+                    screenshot: `data:image/png;base64,${screenshot}`
                 });
             });
     });
@@ -69,25 +86,33 @@ async function checkUrl(url, options = {}) {
  * @param {string} url
  * @returns {Promise<string>}
  */
-function getScreenshot(url){
-    return puppeteer
-        .launch({
-            defaultViewport: {
-                width: 800,
-                height: 600,
-                deviceScaleFactor: 1,
-            },
-        })
-        .then(async (browser) => {
-            const page = await browser.newPage();
-            await page.goto(url);
-            const screenshot = await page.screenshot({ encoding: "base64" });
-            await browser.close();
-            return `data:image/png;base64,${screenshot}`;
-        });
-}
+// function getScreenshot(url){
+//     return puppeteer
+//         .launch({
+//             defaultViewport: {
+//                 width: 800,
+//                 height: 600,
+//                 deviceScaleFactor: 1,
+//             },
+//         })
+//         .then(async (browser) => {
+//             const page = await browser.newPage();
+//             // await page.setUserAgent('Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0')
+//             const res = await page.goto(url);
+//             // await page.on('response', async (response) => {
+//             //    await console.log(response);
+//             //    await console.log(response.status());
+//             // });
+//             const headers = res.status();
+//             console.log(headers);
+//             // const screenshot = await page.screenshot({ encoding: "base64" });
+//             // await browser.close();
+//             return "";
+//             // return `data:image/png;base64,${screenshot}`;
+//         });
+// }
 
 module.exports = {
     checkUrl,
-    getScreenshot
+    //getScreenshot
 }
