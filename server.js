@@ -8,11 +8,11 @@ const PORT = process.env.PORT || 8080;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Routers
-const serviceRouter = require('./routes/service/index');
+// Router
+const router = require('./routes/index');
 
 // Routes
-app.use('/api/v1/service', serviceRouter);
+app.use(router);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
