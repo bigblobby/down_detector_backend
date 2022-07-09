@@ -73,7 +73,7 @@ async function checkUrl(url, options = {}) {
                     isDown: !res.ok(),
                     lastChecked: date,
                     headers: options.getHeaders ? res.headers() : null,
-                    screenshot: `data:image/png;base64,${screenshot}`
+                    screenshot: options.getScreenshot ? `data:image/png;base64,${screenshot}` : null
                 });
             });
     });
