@@ -1,5 +1,8 @@
-const router = require('express').Router();
+import express from 'express';
+import serviceRouter from './service';
 
-router.use('/service', require('./service'));
+const router = express.Router();
 
-module.exports = router;
+router.use('/service', serviceRouter);
+
+export default router;

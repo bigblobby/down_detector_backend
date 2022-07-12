@@ -1,4 +1,4 @@
-const serviceHelper = require('../../helpers/service/index');
+import serviceHelper from '../../helpers/service';
 
 async function checkService(req, res){
     const {
@@ -12,24 +12,14 @@ async function checkService(req, res){
         getScreenshot: getScreenshot
     }
 
-
     const result = await serviceHelper.checkUrl(url, options);
-
-    /*
-    * @TODO
-    * Generate a screenshot, save to a file, then return the path if the screenshot exists.
-    * There's no need to generate a screenshot if it already exists.
-    */
-    // const screenshot = getScreenshot ? await serviceHelper.getScreenshot(url) : null;
-
     const data = {
         ...result,
-        // screenshot
     }
 
     res.json(data);
 }
 
-module.exports = {
+export default {
     checkService
 }

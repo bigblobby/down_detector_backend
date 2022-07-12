@@ -10,7 +10,7 @@ const catchAsync = ((fn) => async (req, res, next) => {
     }
 });
 
-module.exports = {
+export default {
     catchAsync
 };
 

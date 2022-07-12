@@ -1,6 +1,6 @@
-const app = require('../server');
-const http = require('http');
-const https = require('https');
+import app from '../server';
+import http from 'http';
+import https from "https";
 const PORT = process.env.PORT || 8080;
 
 async function startServer() {

@@ -1,4 +1,4 @@
-const validator = require("validator");
+import validator from 'validator';
 
 async function preCheckService(req, res, next){
     const {url} = req.body;
@@ -13,6 +13,6 @@ async function preCheckService(req, res, next){
     next();
 }
 
-module.exports = {
+export default {
     preCheckService
 }

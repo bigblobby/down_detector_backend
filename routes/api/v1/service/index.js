@@ -1,8 +1,10 @@
-const router = require('express').Router();
-const controller = require('../../../../controllers/service');
-const middleware = require('../../../../middlewares/service');
-const {catchAsync} = require("../../../../middlewares/global");
+import express from 'express';
+import controller from '../../../../controllers/service';
+import middleware from '../../../../middlewares/service';
+import globalMiddleware from '../../../../middlewares/global';
 
-router.post('/check', middleware.preCheckService, catchAsync(controller.checkService));
+const router = express.Router();
 
-module.exports = router;
+router.post('/check', middleware.preCheckService, globalMiddleware.catchAsync(controller.checkService));
+
+export default router
