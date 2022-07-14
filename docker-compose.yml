@@ -23,5 +23,14 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
 
+  pgadmin-compose:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "tom_dempster@hotmail.co.uk"
+      PGADMIN_DEFAULT_PASSWORD: "test123"
+    ports:
+      - "16543:80"
+    depends_on:
+      - db
 volumes:
   data: {}
