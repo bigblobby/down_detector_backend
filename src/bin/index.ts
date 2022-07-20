@@ -1,10 +1,11 @@
 import http from 'http';
 import https from "https";
-import config from '../config/appconfig';
-import app from '../server';
+import "reflect-metadata";
+import config from '../config/appconfig.js';
+import app from '../server/index.js';
 import connectToDB from "../db/index.js";
 
-async function startServer() {
+async function startServer(): Promise<void> {
     await connectToDB();
 
     try {

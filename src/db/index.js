@@ -1,21 +1,28 @@
-import config from '../config/appconfig';
-import pkg from "pg";
-const { Pool } = pkg;
+import config from '../config/appconfig.js';
+import { DataSource } from "typeorm"
+import { User } from "../entities/User.js";
 
-const pool = new Pool({
+export const AppDataSource = new DataSource({
+    type: "postgres",
     host: config.db.host,
-    user: config.db.user,
-    database: config.db.name,
+    port: config.db.port,
+    username: config.db.user,
     password: config.db.password,
-    port: parseInt(config.db.port || "5432")
-});
+    database: config.db.name,
+    entities: [User],
+    synchronize: true,
+    logging: false,
+})
 
+// to initialize initial connection with the database, register all entities
+// and "synchronize" database schema, call "initialize()" method of a newly created database
+// once in your application bootstrap
 const connectToDB = async () => {
-    try {
-        await pool.connect();
-    } catch (err) {
-        console.log(err);
-    }
-};
+    AppDataSource.initialize()
+        .then(() => {
+            // here you can start to work with your database
+        })
+        .catch((error) => console.log(error))
+}
 
 export default connectToDB;
