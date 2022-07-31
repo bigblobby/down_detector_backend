@@ -10,6 +10,7 @@ export const AppDataSource = new DataSource({
     password: config.db.password,
     database: config.db.name,
     entities: [User],
+    subscribers: [],
     synchronize: true,
     logging: false,
 })
