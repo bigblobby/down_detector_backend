@@ -18,7 +18,6 @@ const jwtConfirm = async(req, res, next) => {
             return next(error);
         }
 
-
         req.user = user;
         next();
     })(req, res);

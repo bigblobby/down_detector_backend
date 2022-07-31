@@ -1,4 +1,14 @@
-import {Entity, Column, PrimaryGeneratedColumn, BeforeInsert} from "typeorm";
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    BeforeInsert,
+    OneToOne,
+    JoinColumn,
+    CreateDateColumn,
+    UpdateDateColumn
+} from "typeorm";
+import {UserSettings} from "./UserSettings.js";
 import bcrypt from "bcrypt";
 
 @Entity()
@@ -9,7 +19,7 @@ export class User {
     @Column()
     username: string;
 
-    @Column()
+    @Column({select: false})
     password: string;
 
     @Column()
@@ -26,6 +36,18 @@ export class User {
 
     @Column({default: false})
     isActive: boolean;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @OneToOne(type => UserSettings, {
+        cascade: true,
+    })
+    @JoinColumn()
+    settings: UserSettings;
 
     @BeforeInsert()
     async hashPassword() {

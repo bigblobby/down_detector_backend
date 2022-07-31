@@ -1,8 +1,6 @@
 import {UserRepository} from "../../repository/user.repository.js";
 import AuthHelper from "../../helpers/auth/index.js";
 import passport from "passport";
-import authMiddleware from "../../middlewares/auth/index.js";
-import router from "../../routes/api/v1/index.js";
 
 async function register(req, res) {
     const {username, password, email } = req.body;
