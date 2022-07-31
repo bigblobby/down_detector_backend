@@ -1,5 +1,8 @@
 import {UserRepository} from "../../repository/user.repository.js";
 import AuthHelper from "../../helpers/auth/index.js";
+import passport from "passport";
+import authMiddleware from "../../middlewares/auth/index.js";
+import router from "../../routes/api/v1/index.js";
 
 async function register(req, res) {
     const {username, password, email } = req.body;
@@ -18,22 +21,31 @@ async function register(req, res) {
 }
 
 async function login(req, res) {
-    const {username, password} = req.body;
+    passport.authenticate('local', {session: false}, (err, user, info) => {
+        if(err || !user) {
+            return res.status(400).json({message: err.message});
+        }
 
-    if(!username || !password) {
-        return res.status(400).json({message: "Missing username or password"});
-    }
+        req.login(user, {session: false}, (err) => {
+            if(err) {
+                return res.status(400).json({message: err.message});
+            }
 
-    try {
-        const user = await UserRepository.verifyUser({username, password});
-        const token = await AuthHelper.createToken(user);
-        res.json({message: "login", user: user, token: token});
-    } catch (error) {
-        return res.status(400).json({message: error.message});
-    }
+            const token = AuthHelper.createToken(user);
+            res.json({message: info.message, user: user, token: token});
+        });
+    })(req, res);
+}
+
+function protect(req, res){
+    res.json({
+        message: "Your access token was successfully validated",
+        user: req.user
+    });
 }
 
 export default {
     register,
     login,
+    protect
 }

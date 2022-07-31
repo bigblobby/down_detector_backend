@@ -3,6 +3,9 @@ import morgan from 'morgan';
 import cors from 'cors';
 import router from '../routes/index.js';
 
+// Init auth strategies
+import '../auth/strategies/index.js';
+
 const app = express();
 
 // Middleware
@@ -16,7 +19,8 @@ app.use(router);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ error: 'Something broke!', status: 500 });
+    // TODO create an error handling service
+    res.status(err.statusCode || 500).json({ error: err.message || 'Something broke!', status: err.statusCode || 500 });
 })
 
 export default app;
