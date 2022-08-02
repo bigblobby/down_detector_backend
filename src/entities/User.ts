@@ -8,6 +8,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn
 } from "typeorm";
+import {IsEmail, Length} from "class-validator";
 import {UserSettings} from "./UserSettings.js";
 import bcrypt from "bcrypt";
 
@@ -16,13 +17,15 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({nullable: false})
+    @Length(4, 20)
     username: string;
 
-    @Column({select: false})
+    @Column({nullable: false})
     password: string;
 
-    @Column()
+    @Column({unique: true, nullable: false})
+    @IsEmail({}, {message: "Email is not valid"})
     email: string;
 
     @Column({nullable: true})

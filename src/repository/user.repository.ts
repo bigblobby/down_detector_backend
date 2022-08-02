@@ -2,20 +2,24 @@ import {AppDataSource} from "../db/index.js";
 import {User} from "../entities/User.js";
 import {UserSettings} from "../entities/UserSettings.js";
 import bcrypt from "bcrypt";
+import {validate} from "class-validator"
 
 export const UserRepository = AppDataSource.getRepository(User).extend({
     async createUser(data) {
-        try {
-            const user = new User();
-            const settings = new UserSettings();
-            user.username = data.username;
-            user.email = data.email;
-            user.password = data.password;
-            user.settings = settings;
-            return await this.save(user);
-        } catch (error) {
-            throw error;
+        const user = new User();
+        const settings = new UserSettings();
+        user.username = data.username;
+        user.email = data.email;
+        user.password = data.password;
+        user.settings = settings;
+
+        const errors = await validate(user)
+
+        // TODO set up proper validator handler
+        if(errors.length > 0) {
+            throw new Error(`Validation failed!`)
         }
+        return await this.save(user);
     },
 
     async verifyUser(data) {
