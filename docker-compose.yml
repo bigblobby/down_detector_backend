@@ -1,17 +1,5 @@
 version: '3.8'
 services:
-  api:
-    container_name: api
-    restart: always
-    build: .
-    ports:
-      - ${PORT}:${PORT}
-    depends_on:
-      - db
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-
   db:
     container_name: postgres
     image: postgres

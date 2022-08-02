@@ -1,8 +1,9 @@
-import {UserRepository} from "../../repository/user.repository.js";
 import AuthHelper from "../../helpers/auth/index.js";
 import passport from "passport";
+import UserModel from "../../models/UserModel.js";
 
 async function register(req, res) {
+    const User = new UserModel();
     const {username, password, email } = req.body;
 
     if(!username || !password || !email) {
@@ -10,18 +11,16 @@ async function register(req, res) {
     }
 
     try {
-        const user = await UserRepository.findOne({
-            where: [{username: username}, {email: email}]
-        });
-        if(user) return res.status(400).json({message: "Username or email already exists"});
+        const user = await User.findExistingUser(username, email);
+        if(user.length) return res.status(400).json({message: "Username or email already exists"});
     } catch (error) {
         return res.status(400).json({message: error.message});
     }
 
     try {
-        const user = await UserRepository.createUser({username, password, email})
-        const token = await AuthHelper.createToken(user);
-        res.json({message: "register", user: user, token: token});
+        const user = await User.create({username: username, password: password, email: email});
+        const token = AuthHelper.createToken(user[0]);
+        res.json({message: "register", user: user[0], token: token});
     } catch (error) {
         // TODO add proper error handling
         const message = error.code === '23505' ? "Username or email already exists" : error.message;
