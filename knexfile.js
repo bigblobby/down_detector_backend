@@ -3,13 +3,11 @@ import path from 'path';
 import {fileURLToPath} from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
-
-// 👇️ "/home/john/Desktop/javascript"
 const __dirname = path.dirname(__filename);
 
 const options = {
     development: {
-        client: 'pg',
+        client: 'mysql2',
         connection: appconfig.db,
         migrations: {
             directory: __dirname + '/Database/migrations',
@@ -17,7 +15,15 @@ const options = {
         seeds: {
             directory: __dirname + '/Database/seeds',
         },
-        pool: { min: 5, max: 30 }
+        pool: {
+            min: 0,
+            max: 10,
+            createTimeoutMillis: 8000,
+            acquireTimeoutMillis: 8000,
+            idleTimeoutMillis: 8000,
+            reapIntervalMillis: 1000,
+            createRetryIntervalMillis: 100,
+        }
     }
 }
 

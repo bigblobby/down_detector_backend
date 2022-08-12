@@ -14,15 +14,18 @@ class UserModel extends BaseModel {
             .catch(err => `Error hashing password: ${ err }`)
     }
 
-    async create(data) {
-        return await this._beforeSave(data).then(data => {
+    create(data) {
+        return this._beforeSave(data).then(data => {
             return super.create(data);
-        }).then(user => {
+        }).then(async(user) => {
+            const inserted = await this.knex.insert({user_id: user[0]}).into('user_settings')
             return Promise.all([
                 user,
-                this.knex.insert({user_id: user[0].id}).into('user_settings')
-            ])
+                inserted
+            ]);
         }).then(([user, _]) => {
+            return this.findOne({'email': data.email})
+        }).then(user => {
             return user;
         })
     }
@@ -40,19 +43,24 @@ class UserModel extends BaseModel {
                 this.on('user_settings.user_id', 'users.id');
             })
             .where(filters)
+            .first();
+    }
+
+    findById(id) {
+        return this.findOne({'users.id': id});
     }
 
     findExistingUser(username, email) {
         return this.knex.from(this.tableName).where({username: username}).orWhere({email: email});
     }
 
-    async verifyUser(username, password) {
-        return this.findOne({username: username})
+    async verifyUser(email, password) {
+        return this.findOne({email: email})
             .then(user => {
-                if(!user.length) throw new Error("User not found");
+                if(!user) throw new Error("User not found");
                 return user;
             }).then(user => {
-                return Promise.all([user, AuthHelper.verifyPassword(password, user[0].password)])
+                return Promise.all([user, AuthHelper.verifyPassword(password, user.password)])
             })
             .then(([user, isValid]) => {
                 if(!isValid) throw new Error("Invalid password");

@@ -26,8 +26,8 @@ class BaseModel {
         return this.findBy('id', id);
     }
 
-    create(data, returning = '*') {
-        return this.knex.insert(data).into(this.tableName).returning(returning);
+    create(data) {
+        return this.knex.insert(data).into(this.tableName);
     }
 
     update(id, data) {

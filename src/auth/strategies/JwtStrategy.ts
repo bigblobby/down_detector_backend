@@ -5,8 +5,16 @@ const ExtractJWT = passportJWT.ExtractJwt;
 
 import UserModel from "../../models/UserModel.js";
 
+function cookieExtractor(req) {
+    let token = null;
+    if (req && req.cookies) {
+        token = req.signedCookies.access_token;
+    }
+    return token;
+}
+
 passport.use(new JWTStrategy({
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor, ExtractJWT.fromAuthHeaderAsBearerToken()]),
     secretOrKey   : process.env.JWT_SECRET
 }, function (jwtPayload, cb) {
     const User = new UserModel();

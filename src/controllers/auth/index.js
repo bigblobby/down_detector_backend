@@ -19,8 +19,16 @@ async function register(req, res) {
 
     try {
         const user = await User.create({username: username, password: password, email: email});
-        const token = AuthHelper.createToken(user[0]);
-        res.json({message: "register", user: user[0], token: token});
+        const token = AuthHelper.createToken(user);
+        res.cookie('access_token', token, {
+            httpOnly: true,
+            // Since localhost is not having https protocol, secure cookies does not work correctly (in postman)
+            // secure: false,
+            signed: true,
+            maxAge: eval(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
+            sameSite: "Strict",
+        });
+        res.json({message: "register", user: user, token: token});
     } catch (error) {
         // TODO add proper error handling
         const message = error.code === '23505' ? "Username or email already exists" : error.message;
@@ -29,9 +37,9 @@ async function register(req, res) {
 }
 
 async function login(req, res) {
-    passport.authenticate('local', {session: false}, (err, user, info) => {
+    passport.authenticate('local', {session: false, badRequestMessage: 'Missing email or password',}, (err, user, info) => {
         if(err || !user) {
-            return res.status(400).json({message: err.message});
+            return res.status(400).json({message: err?.message || info.message || "Something went wrong"});
         }
 
         req.login(user, {session: false}, (err) => {
@@ -40,14 +48,14 @@ async function login(req, res) {
             }
 
             const token = AuthHelper.createToken(user);
-            // res.cookie('access_token', token, {
-            //     httpOnly: true,
-            //     // Since localhost is not having https protocol, secure cookies does not work correctly (in postman)
-            //     secure: false,
-            //     signed: true,
-            //     maxAge: eval(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
-            //     sameSite: "none",
-            // });
+            res.cookie('access_token', token, {
+                httpOnly: true,
+                // Since localhost is not having https protocol, secure cookies does not work correctly (in postman)
+                // secure: false,
+                signed: true,
+                maxAge: eval(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
+                sameSite: "Strict",
+            });
             res.json({message: info.message, user: user, token: token});
         });
     })(req, res);
