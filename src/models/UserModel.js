@@ -1,33 +1,21 @@
 import BaseModel from "./BaseModel.js";
-import AuthHelper from "../helpers/auth/index.js";
+import passwordService from "../services/password/index.js";
 
 class UserModel extends BaseModel {
     constructor() {
         super('users');
+        this.passwordService = passwordService;
     }
 
-    async _beforeSave(data){
-        return AuthHelper.hashPassword(data.password)
-            .then(hash => {
-                return {...data, password: hash}
-            })
-            .catch(err => `Error hashing password: ${ err }`)
-    }
+    async create(data) {
+        // Create user
+        const user = await super.create(data);
 
-    create(data) {
-        return this._beforeSave(data).then(data => {
-            return super.create(data);
-        }).then(async(user) => {
-            const inserted = await this.knex.insert({user_id: user[0]}).into('user_settings')
-            return Promise.all([
-                user,
-                inserted
-            ]);
-        }).then(([user, _]) => {
-            return this.findOne({'email': data.email})
-        }).then(user => {
-            return user;
-        })
+        // Add default user settings
+        await this.knex.insert({user_id: user[0]}).into('user_settings')
+
+        // Find and return created user
+        return await this.findOne({'email': data.email})
     }
 
     findOne(filters = {}) {
@@ -52,20 +40,6 @@ class UserModel extends BaseModel {
 
     findExistingUser(username, email) {
         return this.knex.from(this.tableName).where({username: username}).orWhere({email: email});
-    }
-
-    async verifyUser(email, password) {
-        return this.findOne({email: email})
-            .then(user => {
-                if(!user) throw new Error("User not found");
-                return user;
-            }).then(user => {
-                return Promise.all([user, AuthHelper.verifyPassword(password, user.password)])
-            })
-            .then(([user, isValid]) => {
-                if(!isValid) throw new Error("Invalid password");
-                return user;
-            });
     }
 }
 

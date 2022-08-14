@@ -1,64 +1,52 @@
-import AuthHelper from "../../helpers/auth/index.js";
 import passport from "passport";
-import UserModel from "../../models/UserModel.js";
+import authService from "../../services/auth/index.js";
+import cookieService from "../../services/cookie/index.js";
 
 async function register(req, res) {
-    const User = new UserModel();
-    const {username, password, email } = req.body;
-
-    if(!username || !password || !email) {
-        return res.status(400).json({message: "Missing username, email or password"});
-    }
-
     try {
-        const user = await User.findExistingUser(username, email);
-        if(user.length) return res.status(400).json({message: "Username or email already exists"});
-    } catch (error) {
-        return res.status(400).json({message: error.message});
-    }
+        // Validate request
+        const validatedData = await authService.validateRegisterRequest(req.body);
 
-    try {
-        const user = await User.create({username: username, password: password, email: email});
-        const token = AuthHelper.createToken(user);
-        res.cookie('access_token', token, {
-            httpOnly: true,
-            // Since localhost is not having https protocol, secure cookies does not work correctly (in postman)
-            // secure: false,
-            signed: true,
-            maxAge: eval(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
-            sameSite: "Strict",
-        });
-        res.json({message: "register", user: user, token: token});
-    } catch (error) {
-        // TODO add proper error handling
-        const message = error.code === '23505' ? "Username or email already exists" : error.message;
-        return res.status(400).json({message: message});
+        // Create user
+        const user = await authService.register(validatedData);
+
+        // Sign token
+        const token = await authService.signToken(user);
+
+        // Create and attach cookie
+        await cookieService.createAndAttachJWTCookie(res, token);
+
+        res.status(201).json({message: "User successfully created", user: user, token: token});
+    } catch (err) {
+        res.status(400).json({message: err.message});
     }
 }
 
 async function login(req, res) {
-    passport.authenticate('local', {session: false, badRequestMessage: 'Missing email or password',}, (err, user, info) => {
-        if(err || !user) {
-            return res.status(400).json({message: err?.message || info.message || "Something went wrong"});
-        }
+    try{
+        // Validate request
+        await authService.validateLoginRequest(req.body);
 
-        req.login(user, {session: false}, (err) => {
+        // TODO figure out how to make this less shit
+        // Login user
+        passport.authenticate('local', {session: false, badRequestMessage: 'Missing email or password',}, (err, user, info) => {
             if(err) {
-                return res.status(400).json({message: err.message});
+                return res.status(400).json({message: err?.message || "Something went wrong"});
             }
 
-            const token = AuthHelper.createToken(user);
-            res.cookie('access_token', token, {
-                httpOnly: true,
-                // Since localhost is not having https protocol, secure cookies does not work correctly (in postman)
-                // secure: false,
-                signed: true,
-                maxAge: eval(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
-                sameSite: "Strict",
+            req.login(user, {session: false}, async (err) => {
+                if(err) {
+                    return res.status(400).json({message: err.message});
+                }
+
+                const token = await authService.signToken(user);
+                await cookieService.createAndAttachJWTCookie(res, token);
+                res.json({message: info.message, user: user, token: token});
             });
-            res.json({message: info.message, user: user, token: token});
-        });
-    })(req, res);
+        })(req, res);
+    } catch (err) {
+        res.status(400).json({message: err.message});
+    }
 }
 
 function protect(req, res){
