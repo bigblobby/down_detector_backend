@@ -6,7 +6,8 @@ import cookieParser from 'cookie-parser';
 import passport from "passport";
 
 // Init auth strategies
-import '../auth/strategies/index.js';
+import '../auth/strategies/LocalStrategy.js';
+import '../auth/strategies/JwtStrategy.js';
 
 const app = express();
 

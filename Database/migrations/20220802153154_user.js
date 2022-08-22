@@ -4,7 +4,7 @@
  */
 export function up (knex) {
     return knex.schema
-        .createTable('users', (table) => {
+        .createTable('user', (table) => {
             table.increments('id').primary();
             table.string('username').notNullable();
             table.string('password').notNullable();
@@ -32,6 +32,6 @@ export function up (knex) {
  */
 export function down (knex) {
     return knex.schema
-        .dropTable('users')
+        .dropTable('user')
         .dropTable('user_settings');
 }

@@ -3,7 +3,7 @@ import passwordService from "../services/password/index.js";
 
 class UserModel extends BaseModel {
     constructor() {
-        super('users');
+        super('user');
         this.passwordService = passwordService;
     }
 
@@ -21,21 +21,21 @@ class UserModel extends BaseModel {
     findOne(filters = {}) {
         return this.knex
             .select(
-                'users.*',
+                'user.*',
                 'user_settings.created_at as settings_created_at',
                 'user_settings.updated_at as settings_updated_at',
                 'user_settings.theme as settings_theme',
             )
             .from(this.tableName)
             .leftJoin('user_settings', function() {
-                this.on('user_settings.user_id', 'users.id');
+                this.on('user_settings.user_id', 'user.id');
             })
             .where(filters)
             .first();
     }
 
     findById(id) {
-        return this.findOne({'users.id': id});
+        return this.findOne({'user.id': id});
     }
 
     findExistingUser(username, email) {
