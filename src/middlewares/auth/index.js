@@ -5,7 +5,7 @@ const jwtConfirm = async(req, res, next) => {
 
         // TODO change this once error handler is implemented
         if (!user) {
-            const error = new Error("You are not allowed to access.");
+            const error = new Error("You must first login to view this.");
             error.statusCode = 403;
             return next(error);
         }
