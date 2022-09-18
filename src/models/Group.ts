@@ -5,9 +5,11 @@ import {
     BelongsTo,
     ForeignKey,
     IsUrl,
-    DataType
+    DataType, BelongsToMany
 } from "sequelize-typescript";
 import {User} from "./User.js";
+import {Monitor} from "./Monitor.js";
+import {MonitorGroup} from "./MonitorGroup.js";
 
 @Table({
     paranoid: true
@@ -27,4 +29,5 @@ export class Group extends Model {
     userId: number
 
     @BelongsTo(() => User) user: ReturnType<() => User>;
+    @BelongsToMany(() => Monitor, () => MonitorGroup) monitors: ReturnType<() => Monitor[]>
 }

@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get('/', authMiddleware.jwtConfirm, groupController.getAllGroups)
 router.post('/', authMiddleware.jwtConfirm, joiMiddleware(groupSchema.createGroup), groupController.createGroup)
+router.post('/:id/monitor/:monitorId', authMiddleware.jwtConfirm, groupController.addMonitorToGroup)
+router.delete('/:id/monitor/:monitorId', authMiddleware.jwtConfirm, groupController.removeMonitorFromGroup)
 router.put('/:id', authMiddleware.jwtConfirm, joiMiddleware(groupSchema.updateGroup), groupController.updateGroup)
 router.get('/:id', authMiddleware.jwtConfirm, groupController.getGroupById)
 router.delete('/:id', authMiddleware.jwtConfirm, groupController.deleteGroup)
