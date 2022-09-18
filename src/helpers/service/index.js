@@ -42,11 +42,12 @@ async function checkUrl(url, options = {}) {
 
         puppeteer
             .launch({
-                executablePath: '/usr/bin/chromium-browser',
-                args: [
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox'
-                ],
+                // TODO un-comment this if using docker
+                // executablePath: '/usr/bin/chromium-browser',
+                // args: [
+                //     '--no-sandbox',
+                //     '--disable-setuid-sandbox'
+                // ],
                 defaultViewport: {
                     width: 800,
                     height: 600,

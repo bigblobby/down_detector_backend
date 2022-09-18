@@ -4,7 +4,7 @@ import {
     Table,
     BelongsTo,
     ForeignKey,
-    IsUrl
+    IsUrl, DataType
 } from "sequelize-typescript";
 import {User} from "./User.js";
 
@@ -18,7 +18,7 @@ export class Monitor extends Model {
     @Column
     title: string;
 
-    @Column
+    @Column(DataType.TEXT)
     description: string;
 
     @IsUrl

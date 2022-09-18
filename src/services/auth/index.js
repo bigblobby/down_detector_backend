@@ -5,26 +5,6 @@ import {UserSettings} from "../../models/UserSettings.js";
 import {Op} from "sequelize";
 
 const authService = {
-    validateRegisterRequest(data) {
-        const {username, password, email} = data;
-
-        if (!username || !password || !email) {
-            throw Error("Missing username, email or password")
-        }
-
-        return data;
-    },
-
-    validateLoginRequest(data) {
-        const {email, password} = data;
-
-        if (!email || !password) {
-            throw Error("Missing email or password")
-        }
-
-        return data;
-    },
-
     async register(data) {
         const existingUser = await User.findOne({
             where: {

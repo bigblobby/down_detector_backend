@@ -4,11 +4,8 @@ import cookieService from "../../services/cookie/index.js";
 
 async function register(req, res) {
     try {
-        // Validate request
-        const validatedData = await authService.validateRegisterRequest(req.body);
-
         // Create user
-        const user = await authService.register(validatedData);
+        const user = await authService.register(req.body);
 
         // Sign token
         const token = await authService.signToken(user);
@@ -24,9 +21,6 @@ async function register(req, res) {
 
 async function login(req, res) {
     try{
-        // Validate request
-        await authService.validateLoginRequest(req.body);
-
         // TODO figure out how to make this less shit
         // Login user
         passport.authenticate('local', {session: false, badRequestMessage: 'Missing email or password',}, (err, user, info) => {
