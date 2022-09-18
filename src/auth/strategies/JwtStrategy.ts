@@ -21,11 +21,9 @@ passport.use(new JWTStrategy({
             id: jwtPayload.id
         },
         raw: true
-    })
-        .then(user => {
-            return cb(null, user);
-        })
-        .catch(err => {
-            return cb(err);
-        });
+    }).then(user => {
+        return cb(null, user);
+    }).catch(err => {
+        return cb(err);
+    });
 }));

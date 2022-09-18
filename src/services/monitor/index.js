@@ -36,8 +36,6 @@ const monitorService = {
             where: {userId: userId, id: id}
         })
 
-        console.log(monitor);
-
         if (!monitor[0]) {
             throw Error("This monitor either doesn't exist or you don't have the authorisation to update it.");
         }
