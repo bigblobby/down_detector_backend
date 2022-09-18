@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
+import {Op} from "sequelize";
 import passwordHelper from "../../helpers/password/index.js"
 import {User} from "../../models/User.js";
 import {UserSettings} from "../../models/UserSettings.js";
-import {Op} from "sequelize";
 
 const authService = {
     async register(data) {

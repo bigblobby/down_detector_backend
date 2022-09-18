@@ -12,6 +12,7 @@ import {
 import passwordHelper from "../helpers/password/index.js";
 import {UserSettings} from "./UserSettings.js";
 import {Monitor} from "./Monitor.js";
+import {Group} from "./Group.js";
 
 @Table({paranoid: true})
 export class User extends Model {
@@ -44,4 +45,5 @@ export class User extends Model {
 
     @HasOne(() => UserSettings) settings: ReturnType<() => UserSettings>
     @HasMany(() => Monitor) monitors: ReturnType<() => Monitor[]>
+    @HasMany(() => Group) groups: ReturnType<() => Group[]>
 }

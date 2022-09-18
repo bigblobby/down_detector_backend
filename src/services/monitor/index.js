@@ -1,12 +1,10 @@
-// import MonitorRepository from "../../repositories/MonitorRepository.js";
-
 import {Monitor} from "../../models/Monitor.js";
 
 const monitorService = {
-    async getMonitorsByUserId(id) {
+    async getMonitorsByUserId(userId) {
         return await Monitor.findAll({
             where: {
-                userId: id
+                userId: userId
             }
         })
     },
