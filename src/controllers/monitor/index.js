@@ -13,7 +13,7 @@ async function getAllMonitors(req, res){
 
 async function getMonitorById(req, res){
     try {
-        const monitor = await monitorService.getMonitorById(req.user.id, req.params);
+        const monitor = await monitorService.getMonitorById(req.user.id, req.params.id);
 
         res.status(200).json({monitor})
     } catch (err) {
@@ -33,9 +33,33 @@ async function createMonitor(req, res){
     }
 }
 
-function updateMonitor(req, res){}
+async function updateMonitor(req, res){
+    try {
+        const monitor = await monitorService.updateMonitor(req.user.id, req.params.id, req.body);
 
-function deleteMonitor(req, res){}
+        if(monitor[0]){
+            res.status(200).json({message: 'Successfully updated monitor'})
+        } else {
+            res.status(500).json({message: 'We can\'t update this monitor at this time.'})
+        }
+    } catch (err){
+        res.status(400).json({message: err.message, errors: err.errors});
+    }
+}
+
+async function deleteMonitor(req, res){
+    try {
+        const deleted = await monitorService.deleteMonitor(req.user.id, req.params.id);
+
+        if(deleted){
+            res.status(201).json({message: 'Successfully deleted monitor'})
+        } else {
+            res.status(500).json({message: 'We can\'t delete this monitor at this time.'})
+        }
+    } catch (err) {
+        res.status(400).json({message: err.message});
+    }
+}
 
 export default {
     getAllMonitors,

@@ -1,11 +1,10 @@
-import UserModel from "../../models/UserModel.js";
 import jwt from "jsonwebtoken";
-import passwordService from "../password/index.js";
+import passwordHelper from "../../helpers/password/index.js"
+import {User} from "../../models/User.js";
+import {UserSettings} from "../../models/UserSettings.js";
+import {Op} from "sequelize";
 
-const AuthService = {
-    userRepository: new UserModel(),
-    passwordService: passwordService,
-
+const authService = {
     validateRegisterRequest(data) {
         const {username, password, email} = data;
 
@@ -27,24 +26,38 @@ const AuthService = {
     },
 
     async register(data) {
-        // Check if user already exists
-        const existingUser = await this.userRepository.findExistingUser(data.username, data.email);
-        if (existingUser.length) throw Error("Username or email already exists");
+        const existingUser = await User.findOne({
+            where: {
+                [Op.or]: [
+                    {username: data.username},
+                    {email: data.email}
+                ]
+            }
+        })
 
-        // Hash password
-        const passwordHash = await this.passwordService.hashPassword(data.password);
+        if (existingUser) throw Error("Username or email already exists");
 
-        // Create user and return
-        return await this.userRepository.create({...data, password: passwordHash});
+        return await User.create({
+            ...data,
+            settings: {}
+        }, {include: [UserSettings]})
     },
 
     async login(email, password) {
-        const user = await this.userRepository.findOne({email: email})
+        const user = await User.findOne({
+            where: {
+                email: email
+            },
+            raw: true,
+            nest: true,
+            include: [UserSettings]
+        });
         if(!user) throw Error("User not found");
 
-        const isValid = await this.passwordService.verifyPassword(password, user.password);
+        const isValid = await passwordHelper.verifyPassword(password, user.password);
         if(!isValid) throw Error("Invalid password");
 
+        delete user.password;
         return user;
     },
 
@@ -54,4 +67,4 @@ const AuthService = {
 }
 
 
-export default AuthService;
+export default authService;

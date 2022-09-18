@@ -2,8 +2,7 @@ import passport from 'passport';
 import passportJWT from 'passport-jwt';
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
-
-import UserModel from "../../models/UserModel.js";
+import {User} from "../../models/User.js";
 
 function cookieExtractor(req) {
     let token = null;
@@ -17,9 +16,12 @@ passport.use(new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor, ExtractJWT.fromAuthHeaderAsBearerToken()]),
     secretOrKey   : process.env.JWT_SECRET
 }, function (jwtPayload, cb) {
-    const User = new UserModel();
-    // @ts-ignore
-    return User.findById(jwtPayload.id)
+    return User.findOne({
+        where: {
+            id: jwtPayload.id
+        },
+        raw: true
+    })
         .then(user => {
             return cb(null, user);
         })
