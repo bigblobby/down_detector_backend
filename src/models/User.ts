@@ -15,7 +15,10 @@ import {UserSettings} from './UserSettings.js';
 import {Monitor} from './Monitor.js';
 import {Group} from './Group.js';
 
-@Table({paranoid: true})
+@Table({
+    paranoid: true,
+    freezeTableName: true
+})
 export class User extends Model {
     @AllowNull(false)
     @Column({})

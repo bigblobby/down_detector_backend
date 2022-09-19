@@ -13,7 +13,8 @@ import {Monitor} from './Monitor.js';
 import {MonitorGroup} from './MonitorGroup.js';
 
 @Table({
-    paranoid: true
+    paranoid: true,
+    freezeTableName: true
 })
 export class Group extends Model {
 

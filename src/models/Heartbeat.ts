@@ -10,7 +10,8 @@ import {
 } from 'sequelize-typescript';
 
 @Table({
-    paranoid: true
+    paranoid: true,
+    freezeTableName: true
 })
 export class Heartbeat extends Model {
 

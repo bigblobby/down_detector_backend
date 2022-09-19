@@ -8,7 +8,9 @@ import {
 } from 'sequelize-typescript';
 import {User} from './User.js';
 
-@Table
+@Table({
+    freezeTableName: true
+})
 export class UserSettings extends Model {
 
     @Default('light')
