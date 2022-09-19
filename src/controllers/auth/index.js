@@ -1,6 +1,7 @@
 import passport from 'passport';
 import authService from '../../services/auth/index.ts';
 import cookieService from '../../services/cookie/index.js';
+import mailerService from '../../services/mailer/index.js';
 
 const authController = {
     async register(req, res) {
@@ -11,7 +12,8 @@ const authController = {
             // Create email token
             await authService.createEmailToken(user.email);
 
-            //TODO send verification token using email
+            //Send verification email
+            await mailerService.sendEmailVerification(user.email);
 
             // Sign token
             const token = await authService.signToken(user);
@@ -72,9 +74,7 @@ const authController = {
     async resendEmailVerification(req, res){
         try {
             await authService.createEmailToken(req.user.email);
-
-            //TODO send verification token using email
-
+            await mailerService.sendEmailVerification(req.user.email);
             res.json({message: 'Resent verification email'})
         } catch (err) {
             res.status(500).json({message: err.message})
@@ -93,12 +93,10 @@ const authController = {
     async sendForgotPassword(req, res){
         try {
             await authService.forgotPassword(req.body.email);
-
-            // TODO send forgot password email
-
+            await mailerService.sendForgotPasswordEmail(req.body.email);
             res.status(200).json({message: 'Email sent successfully'});
         } catch (err) {
-            res.status(err.statusCode).json({error: err.name, statusCode: err.statusCode, message: err.message });
+            res.status(err.statusCode || 500).json({error: err.name, statusCode: err.statusCode, message: err.message });
         }
     },
 

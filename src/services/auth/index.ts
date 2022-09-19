@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 import {Op} from 'sequelize';
 import {BadRequestException, InternalServerErrorException, NotFoundException} from '../../utils/errors/index.js'
 import passwordHelper from '../../helpers/password/index.js';
@@ -58,7 +59,7 @@ const authService = {
     },
 
     async createEmailToken(email: string): Promise<EmailVerification> {
-        const token = Math.random().toString(36).substring(2, 9);
+        const token = uuidv4();
         const expiresAt = new Date().setHours((new Date()).getHours() + 2);
 
         const [result, inserted] = await EmailVerification.upsert({
@@ -117,7 +118,7 @@ const authService = {
     },
 
     async createForgotPasswordToken(email: string){
-        const token = Math.random().toString(36).substring(2, 9);
+        const token = uuidv4();
         const expiresAt = new Date().setHours((new Date()).getHours() + 2);
 
         const [result, inserted] = await ForgotPassword.upsert({
