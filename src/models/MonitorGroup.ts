@@ -3,9 +3,10 @@ import {
     Column,
     Table,
     ForeignKey,
-} from "sequelize-typescript";
-import {Monitor} from "./Monitor.js";
-import {Group} from "./Group.js";
+} from 'sequelize-typescript';
+
+import {Monitor} from './Monitor.js';
+import {Group} from './Group.js';
 
 @Table({
     paranoid: true

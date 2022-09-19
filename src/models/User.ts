@@ -8,11 +8,12 @@ import {
     DataType,
     Default,
     BeforeCreate
-} from "sequelize-typescript";
-import passwordHelper from "../helpers/password/index.js";
-import {UserSettings} from "./UserSettings.js";
-import {Monitor} from "./Monitor.js";
-import {Group} from "./Group.js";
+} from 'sequelize-typescript';
+
+import passwordHelper from '../helpers/password/index.js';
+import {UserSettings} from './UserSettings.js';
+import {Monitor} from './Monitor.js';
+import {Group} from './Group.js';
 
 @Table({paranoid: true})
 export class User extends Model {
@@ -38,12 +39,19 @@ export class User extends Model {
     @Column(DataType.ENUM('USER', 'ADMIN'))
     roles: string;
 
+    @Column
+    isActive: boolean;
+
+    @Default(false)
+    @Column
+    isDisabled: boolean;
+
     @BeforeCreate
     static async hashPassword(user){
         user.password = await passwordHelper.hashPassword(user.password);
     }
 
-    @HasOne(() => UserSettings) settings: ReturnType<() => UserSettings>
-    @HasMany(() => Monitor) monitors: ReturnType<() => Monitor[]>
-    @HasMany(() => Group) groups: ReturnType<() => Group[]>
+    @HasOne(() => UserSettings) settings: ReturnType<() => UserSettings>;
+    @HasMany(() => Monitor) monitors: ReturnType<() => Monitor[]>;
+    @HasMany(() => Group) groups: ReturnType<() => Group[]>;
 }

@@ -2,7 +2,7 @@ import passport from 'passport';
 import passportJWT from 'passport-jwt';
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
-import {User} from "../../models/User.js";
+import {User} from '../../models/User.js';
 
 function cookieExtractor(req) {
     let token = null;

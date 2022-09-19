@@ -1,8 +1,8 @@
-import express from "express";
-import groupController from "../../../../controllers/group/index.js";
-import authMiddleware from "../../../../middlewares/auth/index.js"
-import joiMiddleware from "../../../../middlewares/validation/joi.js";
-import groupSchema from "../../../../validators/joi/groupSchema.js";
+import express from 'express';
+import groupController from '../../../../controllers/group/index.js';
+import authMiddleware from '../../../../middlewares/auth/index.js';
+import joiMiddleware from '../../../../middlewares/validation/joi.js';
+import groupSchema from '../../../../validators/joi/groupSchema.js';
 
 const router = express.Router();
 

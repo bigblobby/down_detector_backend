@@ -1,5 +1,5 @@
-import {Monitor} from "../../models/Monitor.js";
-import {Group} from "../../models/Group.js";
+import {Monitor} from '../../models/Monitor.js';
+import {Group} from '../../models/Group.js';
 
 const monitorService = {
     async getMonitorsByUserId(userId) {
@@ -22,7 +22,7 @@ const monitorService = {
         });
 
         if (!monitor) {
-            throw Error("This monitor either doesn't exist or you don't have the authorisation to view it.");
+            throw Error('This monitor either doesn\'t exist or you don\'t have the authorisation to view it.');
         }
 
         return monitor;
@@ -40,7 +40,7 @@ const monitorService = {
         })
 
         if (!monitor[0]) {
-            throw Error("This monitor either doesn't exist or you don't have the authorisation to update it.");
+            throw Error('This monitor either doesn\'t exist or you don\'t have the authorisation to update it.');
         }
 
         return monitor;
@@ -55,7 +55,7 @@ const monitorService = {
         });
 
         if (!monitor) {
-            throw Error("This monitor either doesn't exist or you don't have the authorisation to delete it.");
+            throw Error('This monitor either doesn\'t exist or you don\'t have the authorisation to delete it.');
         }
 
         return monitor;

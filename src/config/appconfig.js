@@ -1,10 +1,10 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
 export default {
     app: {
         port: process.env.PORT || 8080,
-        env: process.env.NODE_ENV || "development"
+        env: process.env.NODE_ENV || 'development'
     },
     db: {
         host: process.env.DB_HOST,

@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
-import {Op} from "sequelize";
-import passwordHelper from "../../helpers/password/index.js"
-import {User} from "../../models/User.js";
-import {UserSettings} from "../../models/UserSettings.js";
+import jwt from 'jsonwebtoken';
+import {Op} from 'sequelize';
+import passwordHelper from '../../helpers/password/index.js';
+import {User} from '../../models/User.js';
+import {UserSettings} from '../../models/UserSettings.js';
 
 const authService = {
     async register(data) {
@@ -13,14 +13,14 @@ const authService = {
                     {email: data.email}
                 ]
             }
-        })
+        });
 
-        if (existingUser) throw Error("Username or email already exists");
+        if (existingUser) throw Error('Username or email already exists');
 
         return await User.create({
             ...data,
             settings: {}
-        }, {include: [UserSettings]})
+        }, {include: [UserSettings]});
     },
 
     async login(email, password) {
@@ -42,7 +42,7 @@ const authService = {
     },
 
     async signToken(user) {
-        return jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: Number(process.env.JWT_EXPIRE)})
+        return jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: Number(process.env.JWT_EXPIRE)});
     }
 }
 

@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import router from '../routes/index.js';
 import cookieParser from 'cookie-parser';
-import passport from "passport";
+import passport from 'passport';
 
 // Init auth strategies
 import '../auth/strategies/LocalStrategy.js';
@@ -16,7 +16,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('combined'));
-app.use(cors({ origin: "http://localhost:3000", credentials: true, }));
+app.use(cors({ origin: 'http://localhost:3000', credentials: true, }));
 app.use(passport.initialize());
 
 // Routes

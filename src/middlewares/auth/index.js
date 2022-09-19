@@ -1,11 +1,11 @@
-import passport from "passport";
+import passport from 'passport';
 
 const jwtConfirm = async(req, res, next) => {
     passport.authenticate('jwt', {session: false}, (err, user, info) => {
 
         // TODO change this once error handler is implemented
         if (!user) {
-            const error = new Error("You must first login to view this.");
+            const error = new Error('You must first login to view this.');
             error.statusCode = 403;
             return next(error);
         }
@@ -17,7 +17,7 @@ const jwtConfirm = async(req, res, next) => {
             return next(error);
         }
 
-        if (err) { return next(err); }
+        if (err) return next(err);
 
         req.user = user;
         next();

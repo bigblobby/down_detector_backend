@@ -1,8 +1,8 @@
-import express from "express";
-import monitorController from "../../../../controllers/monitor/index.js"
-import authMiddleware from "../../../../middlewares/auth/index.js"
-import joiMiddleware from "../../../../middlewares/validation/joi.js";
-import monitorSchemas from "../../../../validators/joi/monitorSchemas.js";
+import express from 'express';
+import monitorController from '../../../../controllers/monitor/index.js';
+import authMiddleware from '../../../../middlewares/auth/index.js';
+import joiMiddleware from '../../../../middlewares/validation/joi.js';
+import monitorSchemas from '../../../../validators/joi/monitorSchemas.js';
 
 const router = express.Router();
 

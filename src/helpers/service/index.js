@@ -21,7 +21,7 @@ function _addHttp(url){
  * @private
  */
 function _checkForHttp(url){
-    const re = new RegExp("^(http|https)://", "i");
+    const re = new RegExp('^(http|https)://', 'i');
     const match = re.test(url);
 
     if(!match) return _addHttp(url);
@@ -67,7 +67,7 @@ async function checkUrl(url, options = {}) {
 
                 let screenshot = null;
                 if(options.getScreenshot){
-                    screenshot = await page.screenshot({ encoding: "base64" });
+                    screenshot = await page.screenshot({ encoding: 'base64' });
                 }
 
                 await browser.close();

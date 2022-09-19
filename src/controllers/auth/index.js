@@ -1,6 +1,6 @@
-import passport from "passport";
-import authService from "../../services/auth/index.js";
-import cookieService from "../../services/cookie/index.js";
+import passport from 'passport';
+import authService from '../../services/auth/index.js';
+import cookieService from '../../services/cookie/index.js';
 
 const authController = {
     async register(req, res) {
@@ -14,7 +14,7 @@ const authController = {
             // Create and attach cookie
             await cookieService.createAndAttachJWTCookie(res, token);
 
-            res.status(201).json({message: "User successfully created", user: user, token: token});
+            res.status(201).json({message: 'User successfully created', user: user, token: token});
         } catch (err) {
             res.status(400).json({message: err.message});
         }
@@ -26,7 +26,7 @@ const authController = {
             // Login user
             passport.authenticate('local', {session: false, badRequestMessage: 'Missing email or password',}, (err, user, info) => {
                 if(err) {
-                    return res.status(400).json({message: err?.message || "Something went wrong"});
+                    return res.status(400).json({message: err?.message || 'Something went wrong'});
                 }
 
                 req.login(user, {session: false}, async (err) => {
@@ -46,7 +46,7 @@ const authController = {
 
     protect(req, res){
     res.json({
-        message: "Your access token was successfully validated",
+        message: 'Your access token was successfully validated',
         user: req.user
     });
 }

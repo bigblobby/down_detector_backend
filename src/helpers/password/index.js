@@ -1,5 +1,5 @@
-import bcrypt from "bcrypt";
-import {SALT} from "../../constants.js";
+import bcrypt from 'bcrypt';
+import {SALT} from '../../constants.js';
 
 const passwordHelper = {
     hashPassword: password => bcrypt.hash(password, SALT),

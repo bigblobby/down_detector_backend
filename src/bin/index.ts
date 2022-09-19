@@ -1,9 +1,9 @@
 import http from 'http';
-import https from "https";
-import "reflect-metadata";
+import https from 'https';
+import 'reflect-metadata';
 import config from '../config/appconfig.js';
 import app from '../server/index.js';
-import {sequelize} from "../db/sequelize.js";
+import {sequelize} from '../db/sequelize.js';
 
 async function startServer(): Promise<void> {
     await sequelize.sync({force: true});

@@ -1,13 +1,13 @@
-import {Group} from "../../models/Group.js";
-import {MonitorGroup} from "../../models/MonitorGroup.js";
-import {Monitor} from "../../models/Monitor.js";
+import {Group} from '../../models/Group.js';
+import {MonitorGroup} from '../../models/MonitorGroup.js';
+import {Monitor} from '../../models/Monitor.js';
 
 const groupService = {
     async addMonitorToGroup(groupId, monitorId){
         return MonitorGroup.create({
             groupId: groupId,
             monitorId: monitorId
-        })
+        });
     },
 
     async removeMonitorFromGroup(groupId, monitorId){
@@ -17,7 +17,7 @@ const groupService = {
                     groupId: groupId,
                     monitorId: monitorId
                 }
-        })
+        });
     },
 
     async getGroupsByUserId(userId){
@@ -25,7 +25,7 @@ const groupService = {
             where: {
                 userId: userId
             }
-        })
+        });
     },
 
     async getGroupById(userId, id){
@@ -40,14 +40,14 @@ const groupService = {
         });
 
         if (!group) {
-            throw Error("This group either doesn't exist or you don't have the authorisation to view it.");
+            throw Error('This group either doesn\'t exist or you don\'t have the authorisation to view it.');
         }
 
         return group;
     },
 
     async createGroup(userId, data){
-        return await Group.create({userId, ...data})
+        return await Group.create({userId, ...data});
     },
 
     async updateGroup(userId, id, data){
@@ -55,10 +55,10 @@ const groupService = {
             ...data
         }, {
             where: {userId: userId, id: id}
-        })
+        });
 
         if (!group[0]) {
-            throw Error("This group either doesn't exist or you don't have the authorisation to update it.");
+            throw Error('This group either doesn\'t exist or you don\'t have the authorisation to update it.');
         }
 
         return group;
@@ -73,7 +73,7 @@ const groupService = {
         });
 
         if (!group) {
-            throw Error("This group either doesn't exist or you don't have the authorisation to delete it.");
+            throw Error('This group either doesn\'t exist or you don\'t have the authorisation to delete it.');
         }
 
         return group;

@@ -5,8 +5,8 @@ import {
     BelongsTo,
     ForeignKey,
     Default
-} from "sequelize-typescript";
-import {User} from "./User.js";
+} from 'sequelize-typescript';
+import {User} from './User.js';
 
 @Table
 export class UserSettings extends Model {
@@ -16,7 +16,7 @@ export class UserSettings extends Model {
     theme: string;
 
     @ForeignKey(() => User)
-    userId: number
+    userId: number;
 
-    @BelongsTo(() => User) user: ReturnType<() => User>
+    @BelongsTo(() => User) user: ReturnType<() => User>;
 }

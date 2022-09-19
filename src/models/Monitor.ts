@@ -7,17 +7,18 @@ import {
     BelongsToMany,
     IsUrl,
     DataType
-} from "sequelize-typescript";
-import {User} from "./User.js";
-import {Group} from "./Group.js";
-import {MonitorGroup} from "./MonitorGroup.js";
+} from 'sequelize-typescript';
+
+import {User} from './User.js';
+import {Group} from './Group.js';
+import {MonitorGroup} from './MonitorGroup.js';
 
 @Table({
     paranoid: true
 })
 export class Monitor extends Model {
     @Column
-    name: string
+    name: string;
 
     @Column
     title: string;
@@ -29,9 +30,30 @@ export class Monitor extends Model {
     @Column
     url: string;
 
+    @Column
+    method: string;
+
+    @Column
+    hostname: string;
+
+    @Column
+    port: number;
+
+    @Column
+    weight: number;
+
+    @Column
+    interval: number;
+
+    @Column(DataType.JSON)
+    acceptedStatusCode: JSON;
+
+    @Column
+    active: boolean;
+
     @ForeignKey(() => User)
-    userId: number
+    userId: number;
 
     @BelongsTo(() => User) user: ReturnType<() => User>;
-    @BelongsToMany(() => Group, () => MonitorGroup) groups: ReturnType<() => Group[]>
+    @BelongsToMany(() => Group, () => MonitorGroup) groups: ReturnType<() => Group[]>;
 }
