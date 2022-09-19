@@ -42,6 +42,7 @@ export class User extends Model {
     @Column(DataType.ENUM('USER', 'ADMIN'))
     roles: string;
 
+    @Default(false)
     @Column
     isActive: boolean;
 

@@ -1,6 +1,6 @@
 import passport from 'passport';
 
-const jwtConfirm = async(req, res, next) => {
+const jwtGuard = async(req, res, next) => {
     passport.authenticate('jwt', {session: false}, (err, user, info) => {
 
         // TODO change this once error handler is implemented
@@ -24,6 +24,4 @@ const jwtConfirm = async(req, res, next) => {
     })(req, res);
 };
 
-export default {
-    jwtConfirm
-}
+export default jwtGuard;
