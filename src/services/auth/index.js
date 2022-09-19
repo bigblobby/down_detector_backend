@@ -41,6 +41,15 @@ const authService = {
         return user;
     },
 
+    async logout(req, res){
+        if(req.signedCookies.access_token){
+            res.clearCookie('access_token')
+            return true;
+        } else {
+            throw Error('Invalid access token');
+        }
+    },
+
     async signToken(user) {
         return jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: Number(process.env.JWT_EXPIRE)});
     }

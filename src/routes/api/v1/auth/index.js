@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.post('/register', joiMiddleware(authSchema.register), controller.register);
 router.post('/login', joiMiddleware(authSchema.login), controller.login);
+router.get('/logout', controller.logout);
 router.get('/protect', authMiddleware.jwtConfirm, controller.protect);
 
 export default router;

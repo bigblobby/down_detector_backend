@@ -44,12 +44,25 @@ const authController = {
         }
     },
 
+    async logout(req, res){
+        try {
+            const cookieCleared = await authService.logout(req, res);
+            if(cookieCleared){
+                res.status(200).json({message: 'You have successfully logged out.'});
+            } else {
+                res.status(500).json({message: 'We can\'t log you out at this time.'});
+            }
+        } catch (err) {
+            res.status(401).json({message: err.message});
+        }
+    },
+
     protect(req, res){
-    res.json({
-        message: 'Your access token was successfully validated',
-        user: req.user
-    });
-}
+        res.json({
+            message: 'Your access token was successfully validated',
+            user: req.user
+        });
+    }
 }
 
 
