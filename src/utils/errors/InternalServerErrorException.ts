@@ -1,9 +1,9 @@
-export default class InternalServerError extends Error {
+export default class InternalServerErrorException extends Error {
     private statusCode: number;
 
     constructor(message) {
         super(message);
-        this.name = "InternalServerError";
+        this.name = "InternalServerErrorException";
         this.statusCode = 500;
     }
 }

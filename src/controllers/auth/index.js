@@ -1,7 +1,6 @@
 import passport from 'passport';
 import authService from '../../services/auth/index.ts';
 import cookieService from '../../services/cookie/index.js';
-import {EmailVerification} from '../../models/EmailVerification.js';
 
 const authController = {
     async register(req, res) {
@@ -11,6 +10,8 @@ const authController = {
 
             // Create email token
             await authService.createEmailToken(user.email);
+
+            //TODO send verification token using email
 
             // Sign token
             const token = await authService.signToken(user);
@@ -86,6 +87,27 @@ const authController = {
             res.status(200).json({message: 'Email successfully verified'})
         } catch (err){
             res.status(err.statusCode || 500).json({error: err.name, statusCode: err.statusCode, message: err.message });
+        }
+    },
+
+    async sendForgotPassword(req, res){
+        try {
+            await authService.forgotPassword(req.body.email);
+
+            // TODO send forgot password email
+
+            res.status(200).json({message: 'Email sent successfully'});
+        } catch (err) {
+            res.status(err.statusCode).json({error: err.name, statusCode: err.statusCode, message: err.message });
+        }
+    },
+
+    async changePassword(req, res){
+        try {
+            await authService.changePassword(req.body.token, req.body.password);
+            res.status(200).json({message: 'Password changed successfully'});
+        } catch (err) {
+            res.status(err.statusCode).json({error: err.name, statusCode: err.statusCode, message: err.message });
         }
     }
 }

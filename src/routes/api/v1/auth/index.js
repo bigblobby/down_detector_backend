@@ -12,5 +12,7 @@ router.get('/logout', controller.logout);
 router.get('/protect', authMiddleware.jwtConfirm, controller.protect);
 router.get('/email/resend-verification', authMiddleware.jwtConfirm, controller.resendEmailVerification);
 router.get('/email/verify/:token', authMiddleware.jwtConfirm, controller.verifyEmail);
+router.post('/forgot-password', controller.sendForgotPassword);
+router.post('/change-password', controller.changePassword);
 
 export default router;
