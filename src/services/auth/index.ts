@@ -103,6 +103,13 @@ const authService = {
         const forgottenPassword = await ForgotPassword.findOne({where: {token: token}});
 
         if(forgottenPassword && forgottenPassword.token){
+            const expires = new Date(forgottenPassword.expiresAt).getTime();
+            const now = new Date().getTime();
+
+            if(expires < now) {
+                throw new BadRequestException('This token has expired please request a new one')
+            }
+
             const user = await User.findOne({where: {email: forgottenPassword.email}});
 
             if(user){
@@ -119,7 +126,7 @@ const authService = {
 
     async createForgotPasswordToken(email: string){
         const token = uuidv4();
-        const expiresAt = new Date().setHours((new Date()).getHours() + 2);
+        const expiresAt = new Date().setMinutes((new Date()).getMinutes() + 15);
 
         const [result, inserted] = await ForgotPassword.upsert({
             email: email,
