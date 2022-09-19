@@ -6,7 +6,7 @@ import guard from '../../../../guards/index.js'
 
 const router = express.Router();
 
-router.post('/register', [joiMiddleware(authSchema.register), controller.register]);
+router.post('/register', joiMiddleware(authSchema.register), controller.register);
 router.post('/login', joiMiddleware(authSchema.login), controller.login);
 router.get('/logout', controller.logout);
 router.get('/protect', guard.jwt, guard.user({isActive: false}), controller.protect);

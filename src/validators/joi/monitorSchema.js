@@ -6,7 +6,7 @@ export default {
         title: Joi.string(),
         url: Joi.string().uri().required(),
         description: Joi.string(),
-    }),
+    }).required().min(1),
     updateMonitor: Joi.object().keys({
         name: Joi.string(),
         title: Joi.string(),
