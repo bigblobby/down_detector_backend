@@ -7,6 +7,7 @@ import {User} from '../../models/User.js';
 import {UserSettings} from '../../models/UserSettings.js';
 import {EmailVerification} from '../../models/EmailVerification.js';
 import {ForgotPassword} from '../../models/ForgotPassword.js';
+import permissionMapper from '../../validators/permissionMapper.js';
 
 const authService = {
     async register(data) {
@@ -23,6 +24,7 @@ const authService = {
 
         return await User.create({
             ...data,
+            allowedActions: Object.values(permissionMapper),
             settings: {}
         }, {include: [UserSettings]});
     },

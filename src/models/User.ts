@@ -47,6 +47,9 @@ export class User extends Model {
     @Column(DataType.JSON)
     permissions: JSON;
 
+    @Column(DataType.JSON)
+    allowedActions: JSON;
+
     @Default(false)
     @Column
     isVerified: boolean;
