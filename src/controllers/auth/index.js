@@ -29,13 +29,8 @@ const authController = {
     },
 
     async logout(req, res){
-        const cookieCleared = await authService.logout(req, res);
-
-        if(cookieCleared){
-            res.status(200).json({message: 'You have successfully logged out.'});
-        } else {
-            throw new BadRequestException('We can\'t log you out at this time.');
-        }
+        await authService.logout(req, res);
+        res.status(200).json({message: 'You have successfully logged out.'});
     },
 
     protect(req, res){

@@ -24,7 +24,7 @@ app.use(router);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    // TODO create an error handling service
+    // TODO create an error handling ping
     res.status(err.statusCode || 500).json({error: err.name || 'UnhandledException', statusCode: err.statusCode || 500, message: err.message || "Something is broken" });
 })
 

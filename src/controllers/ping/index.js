@@ -1,4 +1,4 @@
-import serviceHelper from '../../helpers/service/index.js';
+import serviceHelper from '../../helpers/ping/index.js';
 
 async function checkService(req, res){
     const {
@@ -17,7 +17,7 @@ async function checkService(req, res){
         ...result,
     }
 
-    res.json(data);
+    res.status(200).json(data);
 }
 
 export default {

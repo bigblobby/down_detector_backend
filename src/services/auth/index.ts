@@ -47,8 +47,7 @@ const authService = {
 
     async logout(req, res){
         if(req.signedCookies.access_token){
-            res.clearCookie('access_token')
-            return true;
+            res.clearCookie('access_token');
         } else {
             throw new BadRequestException('Invalid access token');
         }
