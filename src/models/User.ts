@@ -43,6 +43,10 @@ export class User extends Model {
     @Column
     roles: string;
 
+    @Default(['GET', 'POST', 'PUT', 'DELETE'])
+    @Column(DataType.JSON)
+    permissions: JSON;
+
     @Default(false)
     @Column
     isVerified: boolean;

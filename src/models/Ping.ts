@@ -4,16 +4,16 @@ import {
     Table,
     BelongsTo,
     ForeignKey,
-    IsUrl,
     DataType,
-    BelongsToMany
 } from 'sequelize-typescript';
+
+import {Monitor} from './Monitor.js';
 
 @Table({
     paranoid: true,
     freezeTableName: true
 })
-export class Heartbeat extends Model {
+export class Ping extends Model {
 
     @Column
     status: number;
@@ -35,4 +35,9 @@ export class Heartbeat extends Model {
 
     @Column(DataType.JSON)
     headers: JSON;
+
+    @ForeignKey(() => Monitor)
+    monitorId: number;
+
+    @BelongsTo(() => Monitor) monitor: ReturnType<() => Monitor>;
 }

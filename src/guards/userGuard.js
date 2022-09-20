@@ -4,7 +4,13 @@ const userGuard = (options) => async (req, res, next) => {
     const {
         isVerified = true,
         isEnabled = true,
+        ignorePermissions = false
     } = {...options};
+
+    if(!ignorePermissions && !req.user.permissions.includes(req.method)){
+        const error = new ForbiddenException('You don\'t have permission to do this.');
+        return next(error);
+    }
 
     if (req.user) {
         if(isVerified && req.user.isVerified === 0) {

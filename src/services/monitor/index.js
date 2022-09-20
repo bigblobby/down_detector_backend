@@ -1,7 +1,8 @@
 import {Monitor} from '../../models/Monitor.js';
 import {Group} from '../../models/Group.js';
-import {BadRequestException} from '../../utils/errors/index.js';
 import {MonitorGroup} from '../../models/MonitorGroup.js';
+import {Ping} from '../../models/Ping.js';
+import {BadRequestException} from '../../utils/errors/index.js';
 
 const monitorService = {
     async getMonitorsByUserId(userId) {
@@ -20,6 +21,8 @@ const monitorService = {
             },
             include: [{
                 model: Group
+            }, {
+                model: Ping
             }]
         });
 

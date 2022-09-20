@@ -6,10 +6,11 @@ import {
     ForeignKey,
     BelongsToMany,
     IsUrl,
-    DataType
+    DataType, HasMany
 } from 'sequelize-typescript';
 
 import {User} from './User.js';
+import {Ping} from './Ping.js';
 import {Group} from './Group.js';
 import {MonitorGroup} from './MonitorGroup.js';
 
@@ -57,4 +58,5 @@ export class Monitor extends Model {
 
     @BelongsTo(() => User) user: ReturnType<() => User>;
     @BelongsToMany(() => Group, () => MonitorGroup) groups: ReturnType<() => Group[]>;
+    @HasMany(() => Ping) pings: ReturnType<() => Ping[]>;
 }
