@@ -6,6 +6,6 @@ import errorHandler from '../../../../utils/errors/handler/errorHandler.js';
 
 const router = express.Router();
 
-router.post('/check', joiValidator(pingSchema.check), errorHandler(controller.checkService));
+router.post('/check', joiValidator(pingSchema.check), errorHandler(controller.check));
 
 export default router;
