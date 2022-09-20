@@ -24,7 +24,7 @@ const monitorController = {
 
     async deleteMonitor(req, res){
         await monitorService.deleteMonitor(req.user.id, req.params.id);
-        res.status(201).json({message: 'Successfully deleted monitor'});
+        res.status(200).json({message: 'Successfully deleted monitor'});
     }
 }
 

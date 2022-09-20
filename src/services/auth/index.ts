@@ -36,8 +36,8 @@ const authService = {
             nest: true,
             include: [UserSettings]
         });
-        if(!user) throw new NotFoundException("User not found");
 
+        if(!user) throw new NotFoundException("User not found");
         const isValid = await passwordHelper.verifyPassword(password, user.password);
         if(!isValid) throw new BadRequestException("Invalid password");
 

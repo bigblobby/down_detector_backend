@@ -14,17 +14,12 @@ const authController = {
         res.status(201).json({message: 'User successfully created', user: user, token: token});
     },
 
-    async login(req, res) {
-        // TODO figure out how to make this less shit
+    async login(req, res, next) {
         passport.authenticate('local', {session: false, badRequestMessage: 'Missing email or password',}, (err, user, info) => {
-            if(err) {
-                return res.status(err.statusCode || 500).json({error: err.name, statusCode: err.statusCode, message: err.message });
-            }
+            if(err) return next(err);
 
             req.login(user, {session: false}, async (err) => {
-                if(err) {
-                    return res.status(err.statusCode || 500).json({error: err.name, statusCode: err.statusCode, message: err.message });
-                }
+                if(err) return next(err);
 
                 const token = await authService.signToken(user);
                 await cookieService.createAndAttachJWTCookie(res, token);
