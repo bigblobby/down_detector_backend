@@ -7,7 +7,8 @@ import {
     HasMany,
     DataType,
     Default,
-    BeforeCreate
+    BeforeCreate,
+    BeforeUpdate, BeforeBulkUpdate
 } from 'sequelize-typescript';
 
 import passwordHelper from '../helpers/password/index.js';
@@ -39,20 +40,23 @@ export class User extends Model {
     lastName: string;
 
     @Default('USER')
-    @Column(DataType.ENUM('USER', 'ADMIN'))
+    @Column
     roles: string;
 
     @Default(false)
     @Column
-    isActive: boolean;
+    isVerified: boolean;
 
-    @Default(false)
+    @Default(true)
     @Column
-    isDisabled: boolean;
+    isEnabled: boolean;
 
     @BeforeCreate
-    static async hashPassword(user){
-        user.password = await passwordHelper.hashPassword(user.password);
+    @BeforeUpdate
+    static async hashPassword(user, done){
+        if(!user.changed('password')) return done();
+        const password = await passwordHelper.hashPassword(user.get('password'));
+        user.set('password', password);
     }
 
     @HasOne(() => UserSettings) settings: ReturnType<() => UserSettings>;

@@ -1,5 +1,7 @@
 import {Monitor} from '../../models/Monitor.js';
 import {Group} from '../../models/Group.js';
+import {BadRequestException} from '../../utils/errors/index.js';
+import {MonitorGroup} from '../../models/MonitorGroup.js';
 
 const monitorService = {
     async getMonitorsByUserId(userId) {
@@ -22,7 +24,7 @@ const monitorService = {
         });
 
         if (!monitor) {
-            throw Error('This monitor either doesn\'t exist or you don\'t have the authorisation to view it.');
+            throw new BadRequestException('This monitor either doesn\'t exist or you don\'t have the authorisation to view it.');
         }
 
         return monitor;
@@ -40,7 +42,7 @@ const monitorService = {
         })
 
         if (!monitor[0]) {
-            throw Error('This monitor either doesn\'t exist or you don\'t have the authorisation to update it.');
+            throw new BadRequestException('This monitor either doesn\'t exist or you don\'t have the authorisation to update it.');
         }
 
         return monitor;
@@ -55,7 +57,18 @@ const monitorService = {
         });
 
         if (!monitor) {
-            throw Error('This monitor either doesn\'t exist or you don\'t have the authorisation to delete it.');
+            throw new BadRequestException('This monitor either doesn\'t exist or you don\'t have the authorisation to delete it.');
+        }
+
+        const monitorGroup = await MonitorGroup.destroy({
+            where:
+                {
+                    monitorId: id,
+                }
+        });
+
+        if (!monitorGroup) {
+            throw new BadRequestException('This association either doesn\'t exist or you don\'t have the authorisation to delete it.');
         }
 
         return monitor;

@@ -25,7 +25,7 @@ app.use(router);
 app.use((err, req, res, next) => {
     console.error(err.stack);
     // TODO create an error handling service
-    res.status(err.statusCode || 500).json({ error: err.message || 'Something broke!', status: err.statusCode || 500 });
+    res.status(err.statusCode || 500).json({error: err.name || 'UnhandledException', statusCode: err.statusCode || 500, message: err.message || "Something is broken" });
 })
 
 export default app;

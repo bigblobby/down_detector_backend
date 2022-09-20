@@ -1,13 +1,26 @@
 import {Group} from '../../models/Group.js';
 import {MonitorGroup} from '../../models/MonitorGroup.js';
 import {Monitor} from '../../models/Monitor.js';
+import {BadRequestException, NotFoundException} from '../../utils/errors/index.js';
 
 const groupService = {
-    async addMonitorToGroup(groupId, monitorId){
-        return MonitorGroup.create({
-            groupId: groupId,
-            monitorId: monitorId
+    async addMonitorToGroup(userId, groupId, monitorId){
+        const monitor = await Monitor.findOne({where: {id: monitorId, userId: userId}});
+        if(!monitor) throw new NotFoundException('Monitor not found');
+
+        const group = await Group.findOne({where: {id: groupId, userId: userId}});
+        if(!group) throw new NotFoundException('Group not found');
+
+        const [monitorGroup, created] = await MonitorGroup.findOrCreate({
+            where: {
+                groupId: groupId,
+                monitorId: monitorId
+            }
         });
+
+        if(!created) throw new BadRequestException('This monitor has already been added to this group.');
+
+        return monitorGroup;
     },
 
     async removeMonitorFromGroup(groupId, monitorId){
@@ -40,7 +53,7 @@ const groupService = {
         });
 
         if (!group) {
-            throw Error('This group either doesn\'t exist or you don\'t have the authorisation to view it.');
+            throw new BadRequestException('This group either doesn\'t exist or you don\'t have the authorisation to view it.');
         }
 
         return group;
@@ -58,7 +71,7 @@ const groupService = {
         });
 
         if (!group[0]) {
-            throw Error('This group either doesn\'t exist or you don\'t have the authorisation to update it.');
+            throw new BadRequestException('This group either doesn\'t exist or you don\'t have the authorisation to update it.');
         }
 
         return group;
@@ -73,7 +86,18 @@ const groupService = {
         });
 
         if (!group) {
-            throw Error('This group either doesn\'t exist or you don\'t have the authorisation to delete it.');
+            throw new BadRequestException('This group either doesn\'t exist or you don\'t have the authorisation to delete it.');
+        }
+
+        const monitorGroup = await MonitorGroup.destroy({
+            where:
+                {
+                    groupId: id,
+                }
+        });
+
+        if (!monitorGroup) {
+            throw new BadRequestException('This association either doesn\'t exist or you don\'t have the authorisation to delete it.');
         }
 
         return group;

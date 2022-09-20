@@ -19,7 +19,7 @@ const authService = {
             }
         });
 
-        if (existingUser) throw Error('Username or email already exists');
+        if (existingUser) throw new BadRequestException('Username or email already exists');
 
         return await User.create({
             ...data,
@@ -36,10 +36,10 @@ const authService = {
             nest: true,
             include: [UserSettings]
         });
-        if(!user) throw Error("User not found");
+        if(!user) throw new NotFoundException("User not found");
 
         const isValid = await passwordHelper.verifyPassword(password, user.password);
-        if(!isValid) throw Error("Invalid password");
+        if(!isValid) throw new BadRequestException("Invalid password");
 
         delete user.password;
         return user;
@@ -50,7 +50,7 @@ const authService = {
             res.clearCookie('access_token')
             return true;
         } else {
-            throw Error('Invalid access token');
+            throw new BadRequestException('Invalid access token');
         }
     },
 
@@ -68,7 +68,7 @@ const authService = {
             expiresAt: expiresAt
         });
 
-        if(!result) throw Error('Something went wrong');
+        if(!result) throw new InternalServerErrorException('Something went wrong');
 
         return result;
     },
@@ -84,7 +84,7 @@ const authService = {
                 throw new BadRequestException('This token has expired please request a new one')
             }
 
-            const user = await User.update({isActive: true}, {where: {email: emailVerification.email}});
+            const user = await User.update({isVerified: true}, {where: {email: emailVerification.email}});
 
             if(!user[0]){
                 throw new InternalServerErrorException('We couldn\'t verify this account')
@@ -113,9 +113,8 @@ const authService = {
             const user = await User.findOne({where: {email: forgottenPassword.email}});
 
             if(user){
-                const newPassword = await passwordHelper.hashPassword(password);
                 await ForgotPassword.destroy({where: {token: token}});
-                return await User.update({password: newPassword}, {where: {id: user.id}});
+                return await User.update({password: password}, {where: {id: user.id}, individualHooks: true});
             } else {
                 throw new NotFoundException('User not found');
             }
