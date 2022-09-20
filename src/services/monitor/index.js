@@ -44,8 +44,6 @@ const monitorService = {
         if (!monitor[0]) {
             throw new BadRequestException('This monitor either doesn\'t exist or you don\'t have the authorisation to update it.');
         }
-
-        return monitor;
     },
 
     async deleteMonitor(userId, id) {
@@ -60,18 +58,11 @@ const monitorService = {
             throw new BadRequestException('This monitor either doesn\'t exist or you don\'t have the authorisation to delete it.');
         }
 
-        const monitorGroup = await MonitorGroup.destroy({
-            where:
-                {
-                    monitorId: id,
-                }
+        await MonitorGroup.destroy({
+            where: {
+                monitorId: id,
+            }
         });
-
-        if (!monitorGroup) {
-            throw new BadRequestException('This association either doesn\'t exist or you don\'t have the authorisation to delete it.');
-        }
-
-        return monitor;
     }
 }
 

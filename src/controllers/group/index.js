@@ -1,5 +1,4 @@
 import groupService from '../../services/group/index.js';
-import {BadRequestException} from '../../utils/errors/index.js';
 
 const groupController = {
     async addMonitorToGroup(req, res){
@@ -8,13 +7,8 @@ const groupController = {
     },
 
     async removeMonitorFromGroup(req, res){
-        const deleted = await groupService.removeMonitorFromGroup(req.params.id, req.params.monitorId);
-
-        if(deleted){
-            res.status(200).json({message: 'Monitor successfully removed from group'});
-        } else {
-            throw new BadRequestException('We can\'t remove this monitor at this time.');
-        }
+        await groupService.removeMonitorFromGroup(req.params.id, req.params.monitorId);
+        res.status(200).json({message: 'Monitor successfully removed from group'});
     },
 
     async getAllGroups(req, res){
@@ -34,23 +28,13 @@ const groupController = {
     },
 
     async updateGroup(req, res){
-        const group = await groupService.updateGroup(req.user.id, req.params.id, req.body);
-
-        if(group[0]){
-            res.status(200).json({message: 'Successfully updated group'});
-        } else {
-            throw new BadRequestException('We can\'t update this group at this time.')
-        }
+        await groupService.updateGroup(req.user.id, req.params.id, req.body);
+        res.status(200).json({message: 'Successfully updated group'});
     },
 
     async deleteGroup(req, res){
-        const deleted = await groupService.deleteGroup(req.user.id, req.params.id);
-
-        if(deleted){
-            res.status(200).json({message: 'Successfully deleted group'});
-        } else {
-            throw new BadRequestException('We can\'t delete this group at this time.');
-        }
+        await groupService.deleteGroup(req.user.id, req.params.id);
+        res.status(200).json({message: 'Successfully deleted group'});
     }
 }
 

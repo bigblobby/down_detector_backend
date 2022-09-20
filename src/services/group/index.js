@@ -24,13 +24,16 @@ const groupService = {
     },
 
     async removeMonitorFromGroup(groupId, monitorId){
-        return MonitorGroup.destroy({
-            where:
-                {
-                    groupId: groupId,
-                    monitorId: monitorId
-                }
+        const monitorGroup = await MonitorGroup.destroy({
+            where: {
+                groupId: groupId,
+                monitorId: monitorId
+            }
         });
+
+        if (!monitorGroup) {
+            throw new BadRequestException('We can\'t remove this monitor at this time.');
+        }
     },
 
     async getGroupsByUserId(userId){
@@ -73,8 +76,6 @@ const groupService = {
         if (!group[0]) {
             throw new BadRequestException('This group either doesn\'t exist or you don\'t have the authorisation to update it.');
         }
-
-        return group;
     },
 
     async deleteGroup(userId, id){
@@ -89,18 +90,11 @@ const groupService = {
             throw new BadRequestException('This group either doesn\'t exist or you don\'t have the authorisation to delete it.');
         }
 
-        const monitorGroup = await MonitorGroup.destroy({
-            where:
-                {
-                    groupId: id,
-                }
+        await MonitorGroup.destroy({
+            where: {
+                groupId: id,
+            }
         });
-
-        if (!monitorGroup) {
-            throw new BadRequestException('This association either doesn\'t exist or you don\'t have the authorisation to delete it.');
-        }
-
-        return group;
     },
 }
 
