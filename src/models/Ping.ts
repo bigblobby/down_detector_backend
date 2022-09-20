@@ -16,7 +16,7 @@ import {Monitor} from './Monitor.js';
 export class Ping extends Model {
 
     @Column
-    status: number;
+    status: string;
 
     @Column
     statusCode: number;

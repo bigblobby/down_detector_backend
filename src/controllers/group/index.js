@@ -13,13 +13,12 @@ const groupController = {
 
     async getAllGroups(req, res){
         const groups = await groupService.getGroupsByUserId(req.user.id);
-        const message = groups.length > 0 ? 'Groups successfully returned' : 'You have no active groups';
-        res.status(200).json({message, groups});
+        res.status(200).json({message: 'Groups successfully returned', groups});
     },
 
     async getGroupById(req, res){
         const group = await groupService.getGroupById(req.user.id, req.params.id);
-        res.status(200).json({group});
+        res.status(200).json({message: 'Successfully returned group', group});
     },
 
     async createGroup(req, res){

@@ -37,11 +37,9 @@ const groupService = {
     },
 
     async getGroupsByUserId(userId){
-        return await Group.findAll({
-            where: {
-                userId: userId
-            }
-        });
+        const groups = await Group.findAll({where: {userId: userId}});
+        if(groups.length === 0) throw new NotFoundException('You have no active groups');
+        return groups;
     },
 
     async getGroupById(userId, id){

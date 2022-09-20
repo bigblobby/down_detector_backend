@@ -12,7 +12,7 @@ router.post('/login', joiValidator(authSchema.login), errorHandler(controller.lo
 router.get('/logout', errorHandler(controller.logout));
 router.get('/protect', guard.jwt, guard.user({isVerified: false}), controller.protect);
 router.get('/email/resend-verification', guard.jwt, errorHandler(controller.resendEmailVerification));
-router.get('/email/verify/:token', joiValidator(authSchema.verifyEmail, 'params'), guard.jwt, errorHandler(controller.verifyEmail));
+router.get('/email/verify/:token', guard.jwt, joiValidator(authSchema.verifyEmail, 'params'), errorHandler(controller.verifyEmail));
 router.post('/forgot-password', joiValidator(authSchema.forgotPassword), errorHandler(controller.sendForgotPassword));
 router.post('/change-password', joiValidator(authSchema.changePassword), errorHandler(controller.changePassword));
 

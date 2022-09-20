@@ -7,12 +7,11 @@ const userGuard = (options) => async (req, res, next) => {
         ignorePermissions = false
     } = {...options};
 
-    if(!ignorePermissions && !req.user.permissions.includes(req.method)){
-        const error = new ForbiddenException('You don\'t have permission to do this.');
-        return next(error);
-    }
-
     if (req.user) {
+        if(!ignorePermissions && !req.user.permissions.includes(req.method)){
+            const error = new ForbiddenException('You don\'t have permission to do this.');
+            return next(error);
+        }
         if(isVerified && req.user.isVerified === 0) {
             const error = new ForbiddenException('You must activate your account before doing this.');
             return next(error);

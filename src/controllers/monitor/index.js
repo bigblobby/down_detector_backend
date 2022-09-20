@@ -3,13 +3,12 @@ import monitorService from '../../services/monitor/index.js';
 const monitorController = {
     async getAllMonitors(req, res){
         const monitors = await monitorService.getMonitorsByUserId(req.user.id);
-        const message = monitors.length > 0 ? 'Monitors successfully returned' : 'You have no active monitors';
-        res.status(200).json({message, monitors});
+        res.status(200).json({message: 'Monitors successfully returned', monitors});
     },
 
     async getMonitorById(req, res){
         const monitor = await monitorService.getMonitorById(req.user.id, req.params.id);
-        res.status(200).json({monitor});
+        res.status(200).json({message: 'Successfully returned monitor', monitor});
     },
 
     async createMonitor(req, res){

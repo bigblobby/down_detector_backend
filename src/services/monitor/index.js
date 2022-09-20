@@ -2,15 +2,13 @@ import {Monitor} from '../../models/Monitor.js';
 import {Group} from '../../models/Group.js';
 import {MonitorGroup} from '../../models/MonitorGroup.js';
 import {Ping} from '../../models/Ping.js';
-import {BadRequestException} from '../../utils/errors/index.js';
+import {BadRequestException, NotFoundException} from '../../utils/errors/index.js';
 
 const monitorService = {
     async getMonitorsByUserId(userId) {
-        return await Monitor.findAll({
-            where: {
-                userId: userId
-            }
-        })
+        const monitors = await Monitor.findAll({where: {userId: userId}});
+        if(monitors.length === 0) throw new NotFoundException('You have no active monitors');
+        return monitors;
     },
 
     async getMonitorById(userId, id) {
