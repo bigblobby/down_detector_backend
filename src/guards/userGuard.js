@@ -23,7 +23,7 @@ const userGuard = (options) => async (req, res, next) => {
             })
 
             if(!matches.some(Boolean)){
-                const error = new ForbiddenException('You don\'t have permission to do this.');
+                const error = new ForbiddenException('You don\'t have permission to do this action.');
                 return next(error);
             }
         }
