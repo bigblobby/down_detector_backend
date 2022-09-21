@@ -4,6 +4,8 @@ import cors from 'cors';
 import router from '../routes/index.js';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
+import errorLoggerHandler from '../utils/errors/handlers/errorLoggerHandler.js';
+import errorResponseHandler from '../utils/errors/handlers/errorResponseHandler.js';
 
 // Init auth strategies
 import '../auth/strategies/LocalStrategy.js';
@@ -22,10 +24,8 @@ app.use(passport.initialize());
 // Routes
 app.use(router);
 
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    // TODO create an error handling ping
-    res.status(err.statusCode || 500).json({error: err.name || 'UnhandledException', statusCode: err.statusCode || 500, message: err.message || "Something is broken" });
-})
+// Error handlers
+app.use(errorLoggerHandler);
+app.use(errorResponseHandler);
 
 export default app;
