@@ -1,4 +1,4 @@
-#GoScanner
+# GoScanner
 
 A monitoring tool that'll periodically check your resources and notify you if they're down.
 
