@@ -2,7 +2,6 @@ import passport from 'passport';
 import authService from '../../services/auth/index.ts';
 import cookieService from '../../services/cookie/index.js';
 import mailerService from '../../services/mailer/index.js';
-import {BadRequestException} from '../../utils/errors/index.js';
 
 const authController = {
     async register(req, res) {
@@ -60,6 +59,11 @@ const authController = {
     async changePassword(req, res){
         await authService.changePassword(req.body.token, req.body.password);
         res.status(200).json({message: 'Password changed successfully'});
+    },
+
+    async updateUserSettings(req, res){
+        await authService.updateUserSettings(req.user.id, req.body);
+        res.status(200).json({message: 'Settings updated successfully'});
     }
 }
 

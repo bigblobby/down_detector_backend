@@ -1,6 +1,8 @@
 export default (schema, property = 'body') => {
     return async (req, res, next) => {
-        const { error } = await schema.validate(req[property]);
+        const {error, value} = await schema.validate(req[property]);
+
+        req[property] = value;
 
         if (!error) {
             next();

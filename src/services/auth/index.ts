@@ -138,6 +138,14 @@ const authService = {
 
         return result;
     },
+
+    async updateUserSettings(userId, data){
+        const userSettings = await UserSettings.update(data, {where: {userId}});
+
+        if (!userSettings[0]) {
+            throw new InternalServerErrorException('We can\'t update your settings right now.');
+        }
+    },
 }
 
 
