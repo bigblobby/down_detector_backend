@@ -13,6 +13,7 @@ export const sequelize = new Sequelize(appconfig.db.name, appconfig.db.user, app
     host: appconfig.db.host,
     dialect: 'mysql',
     database: 'db_name',
+    logging: false,
     models: [
         User,
         UserSettings,
