@@ -8,10 +8,6 @@ import errorLoggerHandler from '../utils/errors/handlers/errorLoggerHandler.js';
 import errorResponseHandler from '../utils/errors/handlers/errorResponseHandler.js';
 import morganMiddleware from '../middlewares/morgan.js';
 
-// Init auth strategies
-import '../auth/strategies/LocalStrategy.js';
-import '../auth/strategies/JwtStrategy.js';
-
 const app = express();
 
 // Middleware

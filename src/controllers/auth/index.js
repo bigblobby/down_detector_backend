@@ -13,18 +13,11 @@ const authController = {
         res.status(201).json({message: 'User successfully created', user: user, token: token});
     },
 
-    async login(req, res, next) {
-        passport.authenticate('local', {session: false, badRequestMessage: 'Missing email or password',}, (err, user, info) => {
-            if(err) return next(err);
-
-            req.login(user, {session: false}, async (err) => {
-                if(err) return next(err);
-
-                const token = await authService.signToken(user);
-                await cookieService.createAndAttachJWTCookie(res, token);
-                res.json({message: info.message, user: user, token: token});
-            });
-        })(req, res);
+    async login(req, res) {
+        const user = await authService.login(req.body);
+        const token = await authService.signToken(user);
+        await cookieService.createAndAttachJWTCookie(res, token);
+        res.status(200).json({message: 'Logged In Successfully', user: user, token: token});
     },
 
     async logout(req, res){

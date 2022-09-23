@@ -1,27 +1,29 @@
-import passport from 'passport';
+import redisClient from '../utils/connectRedis.js';
+import jwt from 'jsonwebtoken';
+import {User} from '../models/User.js';
+import {BadRequestException, UnauthorizedException} from '../utils/errors/index.js';
 
 const jwtGuard = async(req, res, next) => {
-    passport.authenticate('jwt', {session: false}, (err, user, info) => {
-
-        // TODO change this once error handler is implemented
-        if (!user) {
-            const error = new Error('You must first login to view this.');
-            error.statusCode = 403;
-            return next(error);
+    try {
+        let access_token;
+        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+            access_token = req.headers.authorization.split(' ')[1];
+        } else if (req.cookies.access_token) {
+            access_token = req.cookies.access_token;
         }
 
-        // TODO change this once error handler is implemented
-        if(info){
-            const error = new Error(info.message);
-            error.statusCode = 401;
-            return next(error);
-        }
+        if(!access_token) return next(new UnauthorizedException('You must be logged in.'));
+        const decode = await jwt.verify(access_token, process.env.JWT_SECRET);
+        if(!decode) return next(new BadRequestException('Invalid token or user doesn\'t exist'));
 
-        if (err) return next(err);
+        const user = await User.findOne({where: {id: decode.id}});
+        if(!user) return next(new BadRequestException('User does not exist.'));
 
         req.user = user;
         next();
-    })(req, res);
+    } catch(err){
+        next(err);
+    }
 };
 
 export default jwtGuard;

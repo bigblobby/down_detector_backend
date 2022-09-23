@@ -29,10 +29,10 @@ const authService = {
         }, {include: [UserSettings]});
     },
 
-    async login(email, password) {
+    async login(data) {
         const user = await User.findOne({
             where: {
-                email: email
+                email: data.email
             },
             raw: true,
             nest: true,
@@ -40,7 +40,7 @@ const authService = {
         });
 
         if(!user) throw new NotFoundException("User not found");
-        const isValid = await passwordHelper.verifyPassword(password, user.password);
+        const isValid = await passwordHelper.verifyPassword(data.password, user.password);
         if(!isValid) throw new BadRequestException("Invalid password");
 
         delete user.password;
