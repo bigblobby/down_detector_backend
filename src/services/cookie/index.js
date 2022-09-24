@@ -1,5 +1,5 @@
-function createAndAttachJWTCookie(res, token){
-    res.cookie('access_token', token, {
+function createAndAttachJWTCookie(res, name, token){
+    res.cookie(name, token, {
         httpOnly: true,
         // secure: false,
         // signed: true,

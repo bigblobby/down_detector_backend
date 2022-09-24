@@ -19,3 +19,9 @@ services:
       - '6379:6379'
     volumes:
       - ~/apps/redis:/data
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    volumes:
+      - ~/apps/redisinsight:/db

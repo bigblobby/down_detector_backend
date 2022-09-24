@@ -16,5 +16,6 @@ router.get('/email/verify/:token', guard.jwt, joiValidator(authSchema.verifyEmai
 router.post('/forgot-password', joiValidator(authSchema.forgotPassword), catchAsync(controller.sendForgotPassword));
 router.post('/change-password', joiValidator(authSchema.changePassword), catchAsync(controller.changePassword));
 router.put('/user-settings', guard.jwt, joiValidator(authSchema.userSettings), catchAsync(controller.updateUserSettings))
+router.get('/refresh', catchAsync(controller.refresh))
 
 export default router;

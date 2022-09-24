@@ -1,4 +1,3 @@
-import redisClient from '../utils/connectRedis.js';
 import jwt from 'jsonwebtoken';
 import {User} from '../models/User.js';
 import {BadRequestException, UnauthorizedException} from '../utils/errors/index.js';
@@ -13,10 +12,10 @@ const jwtGuard = async(req, res, next) => {
         }
 
         if(!access_token) return next(new UnauthorizedException('You must be logged in.'));
-        const decode = await jwt.verify(access_token, process.env.JWT_SECRET);
-        if(!decode) return next(new BadRequestException('Invalid token or user doesn\'t exist'));
+        const decoded = await jwt.verify(access_token, process.env.JWT_SECRET);
+        if(!decoded) return next(new BadRequestException('Invalid token or user doesn\'t exist'));
 
-        const user = await User.findOne({where: {id: decode.id}});
+        const user = await User.findOne({where: {id: decoded.id}});
         if(!user) return next(new BadRequestException('User does not exist.'));
 
         req.user = user;
