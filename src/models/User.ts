@@ -11,7 +11,7 @@ import {
     BeforeUpdate, BeforeBulkUpdate
 } from 'sequelize-typescript';
 
-import passwordHelper from '../helpers/password/index.js';
+import hashHelper from '../helpers/hash/index.js';
 import {UserSettings} from './UserSettings.js';
 import {Monitor} from './Monitor.js';
 import {Group} from './Group.js';
@@ -62,7 +62,7 @@ export class User extends Model {
     @BeforeUpdate
     static async hashPassword(user, done){
         if(!user.changed('password')) return done();
-        const password = await passwordHelper.hashPassword(user.get('password'));
+        const password = await hashHelper.hash(user.get('password'));
         user.set('password', password);
     }
 

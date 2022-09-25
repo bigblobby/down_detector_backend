@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import {Op} from 'sequelize';
-import {BadRequestException, InternalServerErrorException, NotFoundException, UnauthorizedException} from '../../utils/errors/index.js'
-import passwordHelper from '../../helpers/password/index.js';
+import {BadRequestException, InternalServerErrorException, NotFoundException} from '../../utils/errors/index.js'
+import hashHelper from '../../helpers/hash/index.js';
 import permissionMapper from '../../validators/permissionMapper.js';
 import {User} from '../../models/User.js';
 import {UserSettings} from '../../models/UserSettings.js';
@@ -39,7 +39,7 @@ const authService = {
         });
 
         if(!user) throw new NotFoundException("User not found");
-        const isValid = await passwordHelper.verifyPassword(data.password, user.password);
+        const isValid = await hashHelper.verify(data.password, user.password);
         if(!isValid) throw new BadRequestException("Invalid password");
 
         delete user.password;
