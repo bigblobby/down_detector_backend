@@ -8,7 +8,6 @@ const redisClient = createClient({
 const connectRedis = async () => {
     try {
         await redisClient.connect();
-        console.log('Redis client connected...');
     } catch (err: any) {
         console.log(err.message);
         setTimeout(connectRedis, 5000);
@@ -17,6 +16,9 @@ const connectRedis = async () => {
 
 connectRedis();
 
+redisClient.on('connect', (err) => console.log('Redis client connected...'));
+redisClient.on("ready", (err) => console.log("Redis ready to use"));
 redisClient.on('error', (err) => console.log(err));
+redisClient.on("end", () => console.log("Redis disconnected successfully"));
 
 export default redisClient;

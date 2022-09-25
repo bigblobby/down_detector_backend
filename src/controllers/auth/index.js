@@ -1,27 +1,31 @@
 import authService from '../../services/auth/index.ts';
 import cookieService from '../../services/cookie/index.js';
 import mailerService from '../../services/mailer/index.js';
+import jwtService from '../../services/jwt/index.js';
+import {User} from '../../models/User.js';
+import {InternalServerErrorException} from '../../utils/errors/index.js';
 
 const authController = {
     async register(req, res) {
         const user = await authService.register(req.body);
         await authService.createEmailToken(user.email);
-        await mailerService.sendEmailVerification(user.email);
-        const access_token = await authService.signAccessToken(user, process.env.JWT_ACCESS_EXPIRE);
-        const refresh_token = await authService.signRefreshToken(user, process.env.JWT_REFRESH_EXPIRE);
-        await authService.addRefreshTokenToRedis(user.id, refresh_token);
-        await cookieService.createAndAttachJWTCookie(res, 'access_token', access_token);
-        await cookieService.createAndAttachJWTCookie(res, 'refresh_token', refresh_token);
+        // TODO implement the mailer service properly
+        // await mailerService.sendEmailVerification(user.email);
+        const access_token = await jwtService.signAccessToken(user);
+        const refresh_token = await jwtService.signRefreshToken(user);
+        await jwtService.addRefreshTokenToRedis(user.id, refresh_token);
+        await cookieService.attachJwtAccessCookie(res, access_token);
+        await cookieService.attachJwtRefreshCookie(res, refresh_token);
         res.status(201).json({message: 'User successfully created', user: user, access_token, refresh_token});
     },
 
     async login(req, res) {
         const user = await authService.login(req.body);
-        const access_token = await authService.signAccessToken(user, process.env.JWT_ACCESS_EXPIRE);
-        const refresh_token = await authService.signRefreshToken(user, process.env.JWT_REFRESH_EXPIRE);
-        await authService.addRefreshTokenToRedis(user.id, refresh_token);
-        await cookieService.createAndAttachJWTCookie(res, 'access_token', access_token);
-        await cookieService.createAndAttachJWTCookie(res, 'refresh_token',  refresh_token);
+        const access_token = await jwtService.signAccessToken(user);
+        const refresh_token = await jwtService.signRefreshToken(user);
+        await jwtService.addRefreshTokenToRedis(user.id, refresh_token);
+        await cookieService.attachJwtAccessCookie(res, access_token);
+        await cookieService.attachJwtRefreshCookie(res,  refresh_token);
         res.status(200).json({message: 'Logged In Successfully', user: user, access_token, refresh_token});
     },
 
@@ -39,7 +43,8 @@ const authController = {
 
     async resendEmailVerification(req, res){
         await authService.createEmailToken(req.user.email);
-        await mailerService.sendEmailVerification(req.user.email);
+        // TODO implement the mailer service properly
+        // await mailerService.sendEmailVerification(req.user.email);
         res.status(200).json({message: 'Resent verification email'})
     },
 
@@ -65,9 +70,17 @@ const authController = {
     },
 
     async refresh(req, res){
-        const access_token = await authService.refreshAccessToken(req.body.userId, req.cookies.refresh_token);
-        await cookieService.createAndAttachJWTCookie(res, 'access_token', access_token);
-        res.status(200).json({access_token});
+        const refreshToken = req.cookies.refresh_token;
+        const exists = await jwtService.checkRefreshTokenExists(req.body.userId, refreshToken)
+        if(exists){
+            const decoded = await jwtService.verifyRefreshToken(refreshToken);
+            const user = await User.findOne({where: {id: decoded.id}});
+            const access_token = await jwtService.signAccessToken(user, process.env.JWT_ACCESS_EXPIRE);
+            await cookieService.attachJwtAccessCookie(res, access_token);
+            res.status(200).json({access_token});
+        } else {
+            throw new InternalServerErrorException('Something went wrong');
+        }
     }
 }
 

@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
 import {User} from '../models/User.js';
 import {BadRequestException, UnauthorizedException} from '../utils/errors/index.js';
+import jwtService from '../services/jwt/index.js';
 
 const jwtGuard = async(req, res, next) => {
     try {
@@ -12,7 +12,7 @@ const jwtGuard = async(req, res, next) => {
         }
 
         if(!access_token) return next(new UnauthorizedException('You must be logged in.'));
-        const decoded = await jwt.verify(access_token, process.env.JWT_SECRET);
+        const decoded = await jwtService.verifyAccessToken(access_token);
         if(!decoded) return next(new BadRequestException('Invalid token or user doesn\'t exist'));
 
         const user = await User.findOne({where: {id: decoded.id}});
