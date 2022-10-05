@@ -7,12 +7,13 @@ import catchAsync from '../../../../utils/catchAsync.js';
 
 const router = express.Router();
 
-router.get('/', guard.jwt, catchAsync(groupController.getAllGroups))
-router.post('/', guard.jwt, joiValidator(groupSchema.createGroup), catchAsync(groupController.createGroup))
-router.post('/:id/monitor/:monitorId', guard.jwt, catchAsync(groupController.addMonitorToGroup))
-router.delete('/:id/monitor/:monitorId', guard.jwt, catchAsync(groupController.removeMonitorFromGroup))
-router.put('/:id', guard.jwt, joiValidator(groupSchema.updateGroup), catchAsync(groupController.updateGroup))
-router.get('/:id', guard.jwt, catchAsync(groupController.getGroupById))
-router.delete('/:id', guard.jwt, catchAsync(groupController.deleteGroup))
+router
+    .get('/', guard.jwt, catchAsync(groupController.getAllGroups))
+    .post('/', guard.jwt, joiValidator(groupSchema.createGroup), catchAsync(groupController.createGroup))
+    .post('/:id/monitor/:monitorId', guard.jwt, catchAsync(groupController.addMonitorToGroup))
+    .delete('/:id/monitor/:monitorId', guard.jwt, catchAsync(groupController.removeMonitorFromGroup))
+    .put('/:id', guard.jwt, joiValidator(groupSchema.updateGroup), catchAsync(groupController.updateGroup))
+    .get('/:id', guard.jwt, catchAsync(groupController.getGroupById))
+    .delete('/:id', guard.jwt, catchAsync(groupController.deleteGroup))
 
 export default router;

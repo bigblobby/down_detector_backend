@@ -81,6 +81,16 @@ const authController = {
         } else {
             throw new InternalServerErrorException('Something went wrong');
         }
+    },
+
+
+
+    // ADMIN
+
+    async logoutUser(req, res){
+        const targetUserId = req.body.id;
+        await jwtService.invalidateToken(targetUserId);
+        res.status(200).json({message: `User ${targetUserId} has been logged out.`});
     }
 }
 

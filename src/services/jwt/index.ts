@@ -52,6 +52,15 @@ const jwtService = {
             throw new BadRequestException('Invalid refresh token');
         }
     },
+
+    async invalidateToken(targetUserId){
+        for await (const key of redisClient.scanIterator({
+            MATCH: `${targetUserId}*`,
+        })) {
+            await redisClient.set(key, "invalid");
+        }
+        return;
+    }
 }
 
 export default jwtService;
