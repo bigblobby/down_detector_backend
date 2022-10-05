@@ -17,6 +17,8 @@ app.use(cors({ origin: 'http://localhost:3000', credentials: true, }));
 // Logger
 app.use(morganMiddleware);
 
+// import '../helpers/cron/index.js';
+
 // Routes
 app.use(router);
 
