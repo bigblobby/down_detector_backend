@@ -8,16 +8,47 @@ import catchAsync from '../../../../utils/catchAsync.js';
 const router = express.Router();
 
 router
-    .post('/register', joiValidator(authSchema.register), catchAsync(controller.register))
-    .post('/login', joiValidator(authSchema.login), catchAsync(controller.login))
-    .get('/logout', catchAsync(controller.logout))
-    .get('/protect', guard.jwt, guard.user({isVerified: false}), controller.protect)
-    .get('/email/resend-verification', guard.jwt, catchAsync(controller.resendEmailVerification))
-    .get('/email/verify/:token', guard.jwt, joiValidator(authSchema.verifyEmail, 'params'), catchAsync(controller.verifyEmail))
-    .post('/forgot-password', joiValidator(authSchema.forgotPassword), catchAsync(controller.sendForgotPassword))
-    .post('/change-password', joiValidator(authSchema.changePassword), catchAsync(controller.changePassword))
-    .put('/user-settings', guard.jwt, joiValidator(authSchema.userSettings), catchAsync(controller.updateUserSettings))
-    .get('/refresh', catchAsync(controller.refresh))
+    .post('/register', [
+        joiValidator(authSchema.register),
+        catchAsync(controller.register)
+    ])
+    .post('/login', [
+        joiValidator(authSchema.login),
+        catchAsync(controller.login)
+    ])
+    .get('/logout', [
+        catchAsync(controller.logout)
+    ])
+    .get('/protect', [
+        guard.jwt,
+        guard.user({isVerified: false}),
+        controller.protect
+    ])
+    .get('/email/resend-verification', [
+        guard.jwt,
+        catchAsync(controller.resendEmailVerification)
+    ])
+    .get('/email/verify/:token', [
+        guard.jwt,
+        joiValidator(authSchema.verifyEmail, 'params'),
+        catchAsync(controller.verifyEmail)
+    ])
+    .post('/forgot-password', [
+        joiValidator(authSchema.forgotPassword),
+        catchAsync(controller.sendForgotPassword)
+    ])
+    .post('/change-password', [
+        joiValidator(authSchema.changePassword),
+        catchAsync(controller.changePassword)
+    ])
+    .put('/user-settings', [
+        guard.jwt,
+        joiValidator(authSchema.userSettings),
+        catchAsync(controller.updateUserSettings)
+    ])
+    .get('/refresh', [
+        catchAsync(controller.refresh)
+    ])
 
 //Admin
 router

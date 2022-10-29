@@ -15,7 +15,7 @@ const jwtGuard = async(req, res, next) => {
         const decoded = await jwtService.verifyAccessToken(access_token);
         if(!decoded) return next(new BadRequestException('Invalid token or user doesn\'t exist'));
 
-        const user = await User.findOne({where: {id: decoded.id}});
+        const user = await User.scope('full').findOne({where: {id: decoded.id}});
         if(!user) return next(new BadRequestException('User does not exist.'));
 
         req.user = user;

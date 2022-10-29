@@ -29,20 +29,12 @@ const authService = {
     },
 
     async login(data) {
-        const user = await User.findOne({
-            where: {
-                email: data.email
-            },
-            raw: true,
-            nest: true,
-            include: [UserSettings]
-        });
-
+        const user = await User.findOne({where: {email: data.email}});
         if(!user) throw new NotFoundException("User not found");
+
         const isValid = await hashHelper.verify(data.password, user.password);
         if(!isValid) throw new BadRequestException("Invalid password");
 
-        delete user.password;
         return user;
     },
 

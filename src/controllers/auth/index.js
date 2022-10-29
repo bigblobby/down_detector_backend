@@ -55,7 +55,7 @@ const authController = {
 
     async sendForgotPassword(req, res){
         await authService.forgotPassword(req.body.email);
-        await mailerService.sendForgotPasswordEmail(req.body.email);
+        // await mailerService.sendForgotPasswordEmail(req.body.email);
         res.status(200).json({message: 'Email sent successfully'});
     },
 

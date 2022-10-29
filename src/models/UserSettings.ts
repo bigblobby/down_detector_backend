@@ -4,10 +4,14 @@ import {
     Table,
     BelongsTo,
     ForeignKey,
-    Default
+    Default,
+    DefaultScope
 } from 'sequelize-typescript';
 import {User} from './User.js';
 
+@DefaultScope(() => ({
+    attributes: ['theme']
+}))
 @Table({
     freezeTableName: true
 })

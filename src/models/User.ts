@@ -8,7 +8,9 @@ import {
     DataType,
     Default,
     BeforeCreate,
-    BeforeUpdate, BeforeBulkUpdate
+    BeforeUpdate,
+    DefaultScope,
+    Scopes
 } from 'sequelize-typescript';
 
 import hashHelper from '../helpers/hash/index.js';
@@ -16,6 +18,17 @@ import {UserSettings} from './UserSettings.js';
 import {Monitor} from './Monitor.js';
 import {Group} from './Group.js';
 
+@DefaultScope(() => ({
+    attributes: ['id', 'username', 'password', 'email', 'firstName', 'lastName'],
+    nest: true,
+    include: [UserSettings]
+}))
+@Scopes(() => ({
+    full: {
+        nest: true,
+        include: [UserSettings]
+    }
+}))
 @Table({
     paranoid: true,
     freezeTableName: true
@@ -69,4 +82,19 @@ export class User extends Model {
     @HasOne(() => UserSettings) settings: ReturnType<() => UserSettings>;
     @HasMany(() => Monitor) monitors: ReturnType<() => Monitor[]>;
     @HasMany(() => Group) groups: ReturnType<() => Group[]>;
+
+    toJSON<T extends any>(): T {
+        const values = Object.assign({}, this.get());
+
+        delete values.password;
+        // delete values.id;
+        delete values.permissions;
+        delete values.allowedActions;
+        delete values.isVerified;
+        delete values.isEnabled;
+        delete values.createdAt
+        delete values.updatedAt;
+        delete values.deletedAt;
+        return values;
+    }
 }
